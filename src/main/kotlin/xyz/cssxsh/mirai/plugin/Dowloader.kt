@@ -71,6 +71,7 @@ internal fun sevenZA(folder: File): File {
                     .use { input -> input.transferTo(output) }
             }
         }
+        setExecutable(true)
     }
 
     return binary
@@ -142,7 +143,6 @@ public fun loadTypeface(folder: File) {
         }
     }
 }
-
 
 @JvmSynthetic
 public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
