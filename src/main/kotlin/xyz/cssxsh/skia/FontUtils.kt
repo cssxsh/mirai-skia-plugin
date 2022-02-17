@@ -10,8 +10,7 @@ import kotlin.jvm.*
  * 获取字体工具
  * @see instances
  */
-public object FontStyles {
-
+public object FontUtils {
 
     internal val instances: MutableList<FontMgr> = ArrayList()
 

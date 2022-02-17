@@ -9,7 +9,7 @@ import java.io.*
  * 构造 PornPub Logo
  */
 public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
-    val font = Font(FontStyles.matchArial(FontStyle.BOLD), 90F)
+    val font = Font(FontUtils.matchArial(FontStyle.BOLD), 90F)
     val prefix = TextLine.make(porn, font)
     val suffix = TextLine.make(hub, font)
     val black = Paint().setARGB(0xFF, 0x00, 0x00, 0x00)
@@ -149,7 +149,7 @@ public fun shout(vararg lines: String): Surface {
     when (lines.size) {
         1 -> {
             val size = 50F
-            val font = Font(FontStyles.matchSimHei(FontStyle.BOLD), size)
+            val font = Font(FontUtils.matchSimHei(FontStyle.BOLD), size)
             val (line) = lines
             for ((index, word) in line.withIndex()) {
                 surface.canvas.drawString(word.toString(), 430F, 80F + index * size, font, black)
@@ -157,7 +157,7 @@ public fun shout(vararg lines: String): Surface {
         }
         2 -> {
             val size = 50F
-            val font = Font(FontStyles.matchSimHei(FontStyle.BOLD), size)
+            val font = Font(FontUtils.matchSimHei(FontStyle.BOLD), size)
             val (first, second) = lines
             for ((index, word) in first.withIndex()) {
                 surface.canvas.drawString(word.toString(), 380F, 80F + index * size, font, black)
@@ -175,8 +175,8 @@ public fun shout(vararg lines: String): Surface {
  * [5000choyen](https://github.com/yurafuca/5000choyen)
  */
 public fun choyen(top: String, bottom: String): Surface {
-    val sans = Font(FontStyles.matchFamilyStyle("Noto Sans SC", FontStyle.BOLD), 100F)
-    val serif = Font(FontStyles.matchFamilyStyle("Noto Serif SC", FontStyle.BOLD), 100F)
+    val sans = Font(FontUtils.matchFamilyStyle("Noto Sans SC", FontStyle.BOLD), 100F)
+    val serif = Font(FontUtils.matchFamilyStyle("Noto Serif SC", FontStyle.BOLD), 100F)
     val red = TextLine.make(top, sans)
     val silver = TextLine.make(bottom, serif)
     val width = maxOf(red.textBlob!!.blockBounds.right + 70, silver.textBlob!!.blockBounds.right + 250).toInt()

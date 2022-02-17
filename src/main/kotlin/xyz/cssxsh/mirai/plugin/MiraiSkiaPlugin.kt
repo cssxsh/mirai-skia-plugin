@@ -29,7 +29,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 "http://dl.font.im/Noto_Sans.zip",
                 "http://dl.font.im/Noto_Serif.zip"
             )
-            logger.info { "fonts: ${FontStyles.provider.makeFamilies().keys}" }
+            logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
         }
 
         // Test
@@ -48,7 +48,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 if (file.exists().not()) download(urlString = user.avatarUrl, folder = dataFolder).renameTo(file)
                 val face = SkiaImage.makeFromEncoded(file.readBytes())
 
-                subject.uploadImage(resource = SkijaExternalResource(origin = petpet(face, delay), formatName = "gif"))
+                subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face, delay), formatName = "gif"))
             }
             """^#shout(.+)""".toRegex() findingReply { result ->
                 logger.info { "shout ${result.value}" }
@@ -71,7 +71,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 if (file.exists().not()) download(urlString = user.avatarUrl, folder = dataFolder).renameTo(file)
                 val face = SkiaImage.makeFromEncoded(file.readBytes())
 
-                subject.uploadImage(resource = SkijaExternalResource(origin = lick(face), formatName = "gif"))
+                subject.uploadImage(resource = SkiaExternalResource(origin = lick(face), formatName = "gif"))
             }
         }
     }

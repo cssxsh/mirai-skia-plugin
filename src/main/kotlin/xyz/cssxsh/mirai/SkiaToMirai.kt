@@ -11,8 +11,8 @@ import java.io.*
  * @see ExternalResource
  */
 @JvmOverloads
-public fun Surface.makeSnapshotResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkijaExternalResource {
-    return SkijaExternalResource(image = makeImageSnapshot(), format = format)
+public fun Surface.makeSnapshotResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkiaExternalResource {
+    return SkiaExternalResource(image = makeImageSnapshot(), format = format)
 }
 
 /**
@@ -22,6 +22,6 @@ public fun Surface.makeSnapshotResource(format: EncodedImageFormat = EncodedImag
  * @see ExternalResource
  */
 @JvmOverloads
-public fun File.makeSnapshotResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkijaExternalResource {
-    return SkijaExternalResource(image = Image.makeFromEncoded(readBytes()), format = format)
+public fun File.makeImageResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkiaExternalResource {
+    return SkiaExternalResource(image = Image.makeFromEncoded(readBytes()), format = format)
 }

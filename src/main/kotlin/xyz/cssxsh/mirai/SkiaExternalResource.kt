@@ -5,7 +5,7 @@ import net.mamoe.mirai.utils.*
 import org.jetbrains.skia.*
 import java.io.*
 
-public class SkijaExternalResource(override val origin: Data, override val formatName: String) : ExternalResource {
+public class SkiaExternalResource(override val origin: Data, override val formatName: String) : ExternalResource {
     public constructor(image: Image, format: EncodedImageFormat) : this(
         origin = requireNotNull(image.encodeToData(format)) { "encode $format result null." },
         formatName = format.name.replace("JPEG", "JPG")

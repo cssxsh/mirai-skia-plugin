@@ -135,9 +135,9 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
 public fun loadTypeface(folder: File) {
     for (file in folder.listFiles() ?: return) {
         when (file.extension) {
-            "ttf" -> FontStyles.provider.registerTypeface(Typeface.makeFromFile(file.path))
-            "ttc" -> FontStyles.provider.registerTypeface(Typeface.makeFromFile(file.path))
-            "otf" -> FontStyles.provider.registerTypeface(Typeface.makeFromFile(file.path))
+            "ttf" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
+            "ttc" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
+            "otf" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
             else -> continue
         }
     }
