@@ -1,6 +1,6 @@
 # [Mirai Skia Plugin](https://github.com/cssxsh/mirai-skia-plugin)
 
-> Mirai Skija 前置插件
+> Mirai Skia 前置插件
 
 [![maven-central](https://img.shields.io/maven-central/v/xyz.cssxsh.mirai/mirai-skia-plugin)](https://search.maven.org/artifact/xyz.cssxsh.mirai/mirai-skia-plugin)
 
