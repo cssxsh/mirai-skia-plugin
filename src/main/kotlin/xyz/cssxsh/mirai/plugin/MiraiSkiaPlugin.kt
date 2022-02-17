@@ -6,6 +6,7 @@ import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
+import org.jetbrains.skiko.*
 import org.jetbrains.skia.Image as SkiaImage
 import xyz.cssxsh.mirai.*
 import xyz.cssxsh.skia.*
@@ -22,7 +23,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
 
     override fun onEnable() {
         launch {
-            //logger.info { "platform: ${Platform.CURRENT}" }
+            logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
             loadFace(folder = dataFolder.resolve("face"))
             loadTypeface(folder = dataFolder.resolve("fonts"),
                 "https://mirrors.tuna.tsinghua.edu.cn/github-release/be5invis/Sarasa-Gothic/LatestRelease/sarasa-gothic-ttc-0.35.9.7z",
