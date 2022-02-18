@@ -13,7 +13,7 @@ import xyz.cssxsh.skia.*
 
 public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
-        id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
+        id = "xyz.cssxsh.mirai.mirai-skia-plugin",
         name = "mirai-skia-plugin",
         version = "1.0.0-dev",
     ) {
