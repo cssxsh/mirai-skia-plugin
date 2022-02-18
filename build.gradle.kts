@@ -26,6 +26,11 @@ mavenCentralPublish {
 dependencies {
     api("org.jetbrains.skiko:skiko-awt:0.7.9") {
         exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+    }
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.0") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
     api("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.9")
     api("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.9")
