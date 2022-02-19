@@ -11,7 +11,6 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
-import org.jetbrains.skia.*
 import xyz.cssxsh.skia.*
 import java.io.*
 import java.util.zip.*
@@ -136,9 +135,9 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
 public fun loadTypeface(folder: File) {
     for (file in folder.listFiles() ?: return) {
         when (file.extension) {
-            "ttf" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
-            "ttc" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
-            "otf" -> FontUtils.provider.registerTypeface(Typeface.makeFromFile(file.path))
+            "ttf" -> FontUtils.loadTypeface(file.path)
+            "ttc" -> FontUtils.loadTypeface(file.path)
+            "otf" -> FontUtils.loadTypeface(file.path)
             else -> continue
         }
     }

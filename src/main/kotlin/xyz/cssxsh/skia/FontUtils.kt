@@ -8,7 +8,9 @@ import kotlin.jvm.*
 
 /**
  * 获取字体工具
- * @see instances
+ * @see Typeface
+ * @see FontMgr
+ * @see TypefaceFontProvider
  */
 public object FontUtils {
 
@@ -33,6 +35,14 @@ public object FontUtils {
         }
 
         return names
+    }
+
+    /**
+     * 加载字体
+     * @see provider
+     */
+    public fun loadTypeface(path: String, index: Int = 0) {
+        provider.registerTypeface(Typeface.makeFromFile(path, index))
     }
 
     /**
