@@ -82,7 +82,7 @@ internal fun sevenZA(folder: File): File {
  */
 @JvmSynthetic
 public suspend fun loadTypeface(folder: File, vararg links: String): Unit = withContext(Dispatchers.IO) {
-    val downloaded = mutableListOf<File>()
+    val downloaded: MutableList<File> = ArrayList()
     val download = folder.resolve("download")
 
     download.mkdirs()
@@ -102,7 +102,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
                     .directory(folder)
                     .start()
                     // 防止卡顿
-                    .apply { inputStream.transferTo(java.io.OutputStream.nullOutputStream()) }
+                    .apply { inputStream.transferTo(OutputStream.nullOutputStream()) }
                     .waitFor()
             }
             "zip" -> {
@@ -143,6 +143,9 @@ public fun loadTypeface(folder: File) {
     }
 }
 
+/**
+ * 下载表情模板
+ */
 @JvmSynthetic
 public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
     folder.mkdirs()

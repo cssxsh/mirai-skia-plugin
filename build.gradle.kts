@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.0.0-dev"
+version = "1.0.0"
 
 repositories {
     mavenLocal()
@@ -24,7 +24,7 @@ mavenCentralPublish {
 }
 
 dependencies {
-    api("org.jetbrains.skiko:skiko-awt:0.7.9") {
+    api("org.jetbrains.skiko:skiko-awt:0.7.13") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
@@ -32,11 +32,11 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
-    api("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.9")
-    api("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.9")
-    api("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.9")
-    api("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.9")
-    api("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.9")
+    api("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.13")
+    api("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.13")
+    api("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.13")
+    api("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.13")
+    api("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.13")
     compileOnly("net.mamoe:mirai-core-utils:2.10.0")
     //
     testImplementation(kotlin("test", "1.6.0"))
@@ -44,6 +44,18 @@ dependencies {
 
 kotlin {
     explicitApi()
+    target.compilations {
+        all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 mirai {

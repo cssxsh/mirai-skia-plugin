@@ -112,7 +112,7 @@ public fun lick(face: Image): Data {
             val bitmap = Bitmap()
             bitmap.allocPixels(lick.imageInfo)
             lick.readPixels(bitmap, index)
-            surface.canvas.clear(Color.makeARGB(0, 0, 0, 0))
+            surface.canvas.clear(Color.TRANSPARENT)
             surface.writePixels(bitmap, 0, 0)
 
             val (l, t) = offsets[index % 8]
