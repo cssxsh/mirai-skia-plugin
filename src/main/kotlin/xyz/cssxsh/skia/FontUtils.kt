@@ -14,16 +14,14 @@ import kotlin.jvm.*
  */
 public object FontUtils {
 
-    internal val instances: MutableList<FontMgr> = ArrayList()
+    internal val instances: Sequence<FontMgr> = sequence {
+        yield(provider)
+        yield(FontMgr.default)
+        yieldAll(ServiceLoader.load(FontMgr::class.java, this::class.java.classLoader))
+        yieldAll(ServiceLoader.load(TypefaceFontProvider::class.java, this::class.java.classLoader))
+    }
 
     public val provider: TypefaceFontProvider = TypefaceFontProvider()
-
-    init {
-        instances.add(provider)
-        instances.add(FontMgr.default)
-        instances.addAll(ServiceLoader.load(FontMgr::class.java, this::class.java.classLoader))
-        instances.addAll(ServiceLoader.load(TypefaceFontProvider::class.java, this::class.java.classLoader))
-    }
 
     /**
      * 字体列表
@@ -43,6 +41,22 @@ public object FontUtils {
      */
     public fun loadTypeface(path: String, index: Int = 0) {
         provider.registerTypeface(Typeface.makeFromFile(path, index))
+    }
+
+    /**
+     * 加载字体
+     * @see provider
+     */
+    public fun loadTypeface(data: Data, index: Int = 0) {
+        provider.registerTypeface(Typeface.makeFromData(data, index))
+    }
+
+    /**
+     * 加载字体
+     * @see provider
+     */
+    public fun loadTypeface(bytes: ByteArray, index: Int = 0) {
+        Data.makeFromBytes(bytes).use { data -> loadTypeface(data, index) }
     }
 
     /**
@@ -101,6 +115,6 @@ public object FontUtils {
 
     /**
      * Helvetica
-      */
+     */
     public fun matchHelvetica(style: FontStyle): Typeface? = matchFamilyStyle("Helvetica", style)
 }
