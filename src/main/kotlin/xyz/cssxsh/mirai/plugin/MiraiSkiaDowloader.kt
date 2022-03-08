@@ -131,14 +131,13 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
 /**
  * 从指定目录加载字体
  * @param folder 字体文件文件夹
+ * @see FontUtils.loadTypeface
  */
 public fun loadTypeface(folder: File) {
     for (file in folder.listFiles() ?: return) {
         when (file.extension) {
-            "ttf" -> FontUtils.loadTypeface(file.path)
-            "ttc" -> FontUtils.loadTypeface(file.path)
-            "otf" -> FontUtils.loadTypeface(file.path)
-            else -> continue
+            "ttf", "ttc", "otf", "eot", "fon", "font", "woff", "woff2" -> FontUtils.loadTypeface(file.path)
+            else -> loadTypeface(folder = file)
         }
     }
 }
