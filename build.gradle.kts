@@ -38,8 +38,10 @@ dependencies {
     api("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.13")
     api("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.13")
     compileOnly("net.mamoe:mirai-core-utils:2.10.0")
+    compileOnly("org.jsoup:jsoup:1.14.3")
     //
     testImplementation(kotlin("test", "1.6.0"))
+    testImplementation("org.jsoup:jsoup:1.14.3")
 }
 
 kotlin {
