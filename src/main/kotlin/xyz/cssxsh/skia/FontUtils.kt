@@ -17,8 +17,8 @@ public object FontUtils {
     internal val instances: Sequence<FontMgr> = sequence {
         yield(provider)
         yield(FontMgr.default)
-        yieldAll(ServiceLoader.load(FontMgr::class.java, this::class.java.classLoader))
-        yieldAll(ServiceLoader.load(TypefaceFontProvider::class.java, this::class.java.classLoader))
+        yieldAll(ServiceLoader.load(FontMgr::class.java))
+        yieldAll(ServiceLoader.load(TypefaceFontProvider::class.java))
     }
 
     public val provider: TypefaceFontProvider = TypefaceFontProvider()

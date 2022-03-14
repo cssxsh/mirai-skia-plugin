@@ -181,7 +181,6 @@ public fun choyen(top: String, bottom: String): Surface {
     val silver = TextLine.make(bottom, serif)
     val width = maxOf(red.textBlob!!.blockBounds.right + 70, silver.textBlob!!.blockBounds.right + 250).toInt()
     val surface = Surface.makeRasterN32Premul(width, 290)
-    // setTransform(m11, m12, m21, m22, dx, dy)
     surface.canvas.skew(-0.45F, 0F)
     top(canvas = surface.canvas, text = red)
     bottom(canvas = surface.canvas, text = silver)

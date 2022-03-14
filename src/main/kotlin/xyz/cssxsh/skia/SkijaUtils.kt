@@ -34,25 +34,27 @@ public fun SVGDOM.Companion.makeFromString(xml: String): SVGDOM {
             val after = text.indexOf('}', before)
             if (after == -1) break
 
-            val query = text.substring(pos, before).trim()
+            val query = text.substring(pos, before)
             val attributes = text.substring(before + 1, after).split(';')
 
             for (attribute in attributes) {
-                val key = attribute.substringBefore(':').trim()
-                val value = attribute.substringAfter(':').trim()
+                val key = attribute.substringBefore(':')
+                val value = attribute.substringAfter(':')
 
                 try {
                     for (element in document.select(query)) {
                         element.attr(key, value)
                     }
                 } catch (_: org.jsoup.select.Selector.SelectorParseException) {
-                    // 
+                    //
                 }
             }
 
             pos = after + 1
         }
+
+        style.remove()
     }
 
-    return SVGDOM(data = Data.makeFromBytes(document.toString().toByteArray()))
+    return SVGDOM(data = Data.makeFromBytes(bytes = document.toString().toByteArray()))
 }

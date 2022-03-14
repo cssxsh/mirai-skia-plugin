@@ -15,7 +15,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.0.0",
+        version = "1.0.1",
     ) {
         author("cssxsh")
     }
