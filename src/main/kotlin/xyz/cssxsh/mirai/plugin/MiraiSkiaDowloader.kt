@@ -135,15 +135,22 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
  */
 public fun loadTypeface(folder: File) {
     for (file in folder.listFiles() ?: return) {
-        when (file.extension) {
-            "ttf", "ttc", "otf", "eot", "fon", "font", "woff", "woff2" -> {
-                try {
-                    FontUtils.loadTypeface(path = file.path)
-                } catch (cause: Throwable) {
-                    logger.warning({ "加载字体文件失败 ${file.path}" }, cause)
+        try {
+            when (file.extension) {
+                "ttf", "otf", "eot", "fon", "font", "woff", "woff2" -> FontUtils.loadTypeface(path = file.path)
+                "ttc" -> {
+                    val count = file.inputStream().use { input ->
+                        input.skip(8)
+                        input.readNBytes(4).toInt()
+                    }
+                    for (index in 0 until count) {
+                        FontUtils.loadTypeface(path = file.path, index = index)
+                    }
                 }
+                else -> loadTypeface(folder = file)
             }
-            else -> loadTypeface(folder = file)
+        } catch (cause: Throwable) {
+            logger.warning({ "加载字体文件失败 ${file.path}" }, cause)
         }
     }
 }
