@@ -74,6 +74,19 @@ public object FontUtils {
     }
 
     /**
+     * 获取指定的 [FontStyleSet]
+     */
+    public fun matchFamily(familyName: String): FontStyleSet? {
+        for (provider in instances) {
+            val styles = provider.matchFamily(familyName)
+            if (styles.count() != 0) {
+                return styles
+            }
+        }
+        return null
+    }
+
+    /**
      * 宋体
      */
     public fun matchSimSun(style: FontStyle): Typeface? = matchFamilyStyle("SimSun", style)
