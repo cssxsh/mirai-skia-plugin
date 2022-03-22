@@ -1,7 +1,7 @@
 package xyz.cssxsh.skia.gif
 
 import org.jetbrains.skia.*
-import org.jetbrains.skia.impl.BufferUtil
+import org.jetbrains.skia.impl.*
 import java.nio.*
 
 public class GIFBuilder(public val width: Int, public val height: Int) {
@@ -91,7 +91,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         block: AnimationFrameInfo.() -> Unit = {}
     ): GIFBuilder = apply {
         val rect = IRect.makeXYWH(0, 0, bitmap.width, bitmap.height)
-        frames.add(Triple(bitmap, colors, options.withFrameRect(rect).apply(block)))
+        frames.add(Triple(bitmap, colors, options.withFrameRect(rect).withAlphaType(bitmap.alphaType).apply(block)))
     }
 
     public fun frame(
@@ -114,16 +114,15 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
                 colors.exists() -> colors
                 global.exists() -> global
                 else -> {
-                    if (info.alphaType == ColorAlphaType.OPAQUE) {
-                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true)
+                    if (info.alphaType == ColorAlphaType.OPAQUE || bitmap.computeIsOpaque()) {
+                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true, transparency = null)
                     } else {
                         ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 255), sort = true)
                     }
                 }
             }
-            val transparency = if (info.alphaType == ColorAlphaType.OPAQUE) null else table.transparency
 
-            GraphicControlExtension.write(buffer, info.disposalMethod, false, transparency, info.duration)
+            GraphicControlExtension.write(buffer, info.disposalMethod, false, table.transparency, info.duration)
 
             val result = AtkinsonDitherer.dither(bitmap, table.colors)
 
@@ -145,6 +144,6 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         val buffer = ByteBuffer.allocate(capacity)
         build(buffer = buffer)
 
-        return ByteArray(buffer.position()).also { buffer.get(it) }
+        return buffer.array().sliceArray(0 until buffer.position())
     }
 }

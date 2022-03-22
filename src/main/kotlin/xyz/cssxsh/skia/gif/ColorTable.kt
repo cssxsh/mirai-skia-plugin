@@ -5,7 +5,7 @@ import java.nio.*
 public class ColorTable(
     public val colors: IntArray,
     public val sort: Boolean,
-    public val transparency: Int = (colors.capacity() - 1).coerceAtLeast(0),
+    public val transparency: Int? = (colors.capacity() - 1).coerceAtLeast(0),
     public val background: Int = 0
 ) {
     public companion object {
