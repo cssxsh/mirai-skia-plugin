@@ -13,9 +13,9 @@ import xyz.cssxsh.skia.*
 
 public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
-        id = "xyz.cssxsh.mirai.mirai-skia-plugin",
+        id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.0.1",
+        version = "1.0.2",
     ) {
         author("cssxsh")
     }
@@ -23,8 +23,10 @@ public object MiraiSkiaPlugin : KotlinPlugin(
 
     override fun onEnable() {
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
-        loadTypeface(folder = dataFolder.resolve("fonts"))
-        logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
+        launch {
+            loadTypeface(folder = dataFolder.resolve("fonts"))
+            logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
+        }
 
         val test = System.getProperty("xyz.cssxsh.skia.test", "false").toBoolean()
         if (test) {
@@ -48,28 +50,11 @@ public object MiraiSkiaPlugin : KotlinPlugin(
 
                     subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face, delay), formatName = "gif"))
                 }
-                """^#shout(.+)""".toRegex() findingReply { result ->
-                    logger.info { "shout ${result.value}" }
-                    val lines = message.firstIsInstance<PlainText>().content
-                        .removePrefix("#shout")
-                        .split(' ').filterNot { it.isBlank() }
-                        .toTypedArray()
-                    subject.uploadImage(resource = shout(lines = lines).makeSnapshotResource())
-                }
                 """^#choyen\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
                     logger.info { "choyen ${result.value}" }
                     val (top, bottom) = result.destructured
 
                     subject.uploadImage(resource = choyen(top, bottom).makeSnapshotResource())
-                }
-                """^#lick""".toRegex() findingReply { result ->
-                    logger.info { "lick ${result.value}" }
-                    val user = message.findIsInstance<At>()?.target?.let { (subject as? Group)?.get(it) } ?: sender
-                    val file = dataFolder.resolve("${user.id}.jpg")
-                    if (file.exists().not()) download(urlString = user.avatarUrl, folder = dataFolder).renameTo(file)
-                    val face = SkiaImage.makeFromEncoded(file.readBytes())
-
-                    subject.uploadImage(resource = SkiaExternalResource(origin = lick(face), formatName = "gif"))
                 }
             }
         }

@@ -4,7 +4,6 @@ import org.jetbrains.skia.*
 import kotlin.math.pow
 import kotlin.reflect.full.*
 
-
 public sealed class MosaicOption {
     internal abstract fun convert(bitmap: Bitmap)
 
@@ -79,6 +78,9 @@ public sealed class MosaicOption {
     }
 }
 
+/**
+ * 绘制马赛克
+ */
 public fun Surface.drawMosaic(area: IRect, options: MosaicOption) {
     val bitmap = Bitmap()
 
@@ -89,6 +91,9 @@ public fun Surface.drawMosaic(area: IRect, options: MosaicOption) {
     writePixels(bitmap, area.left, area.top)
 }
 
+/**
+ * 绘制马赛克
+ */
 public inline fun <reified O : MosaicOption> Surface.drawMosaic(area: IRect, block: O.() -> Unit = {}) {
     drawMosaic(area = area, options = O::class.createInstance().apply(block))
 }
