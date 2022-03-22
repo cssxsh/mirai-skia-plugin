@@ -4,7 +4,6 @@ import org.jetbrains.skia.*
 import xyz.cssxsh.skia.gif.*
 import java.io.*
 
-
 /**
  * 构造 PornPub Logo
  */
@@ -25,7 +24,7 @@ public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
     return surface
 }
 
-internal const val PET_PET_SPRITE = "xyz.cssxsh.skija.petpet"
+internal const val PET_PET_SPRITE = "xyz.cssxsh.skia.petpet"
 
 /**
  * 构造 PetPet Face
@@ -58,7 +57,7 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
 
     for (rect in rects) surface.canvas.drawImageRect(face, rect)
 
-    surface.canvas.drawImage(sprite, 0F, 0F)
+    surface.writePixels(Bitmap.makeFromImage(sprite), 0, 0)
 
     val images = (0 until 5).map { index ->
         val rect = IRect.makeXYWH(112 * index, 0, 112, 112)
@@ -77,98 +76,6 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
             frame(bitmap = Bitmap.makeFromImage(image))
         }
     }
-}
-
-internal const val LICK_BASE_GIF = "xyz.cssxsh.skija.lick"
-
-/**
- * 构造 Lick Face
- * @see LICK_BASE_GIF
- */
-public fun lick(face: Image): Data {
-    val lick: Codec = try {
-        Codec.makeFromData(Data.makeFromFileName(System.getProperty(LICK_BASE_GIF, "lick.gif")))
-    } catch (cause: Throwable) {
-        throw IllegalStateException(
-            "please download https://mirai.mamoe.net/assets/uploads/files/1645014451174-lick.gif , file path set property $LICK_BASE_GIF",
-            cause
-        )
-    }
-    val surface = Surface.makeRaster(lick.imageInfo)
-
-    val offsets = listOf(
-        0 to 0,
-        1 to 1,
-        2 to 3,
-        3 to 1,
-        1 to 0,
-        2 to 2,
-        3 to 1,
-        0 to 1,
-    )
-
-    return gif(width = lick.width, height = lick.height) {
-        lick.framesInfo.forEachIndexed { index, info ->
-            val bitmap = Bitmap()
-            bitmap.allocPixels(lick.imageInfo)
-            lick.readPixels(bitmap, index)
-            surface.canvas.clear(Color.TRANSPARENT)
-            surface.writePixels(bitmap, 0, 0)
-
-            val (l, t) = offsets[index % 8]
-            surface.canvas.drawImageRect(face, Rect.makeXYWH(110F + l, 240F + t, 150F, 150F))
-
-            surface.readPixels(bitmap, 0, 0)
-
-            frame(bitmap = bitmap, info = info)
-        }
-    }
-
-}
-
-internal const val SHOUT_BACKGROUND = "xyz.cssxsh.skija.shout"
-
-/**
- * Shout Face
- * @see SHOUT_BACKGROUND
- */
-public fun shout(vararg lines: String): Surface {
-    val background = try {
-        Image.makeFromEncoded(File(System.getProperty(SHOUT_BACKGROUND, "shit.png")).readBytes())
-    } catch (cause: Throwable) {
-        throw IllegalStateException(
-            "please download https://mirai.mamoe.net/assets/uploads/files/1644858542844-background.png , file path set property $SHOUT_BACKGROUND",
-            cause
-        )
-    }
-    val surface = Surface.makeRasterN32Premul(535, 500)
-    val black = Paint().setARGB(0xFF, 0x00, 0x00, 0x00)
-
-    surface.canvas.drawImage(background, 0F, 0F)
-
-    when (lines.size) {
-        1 -> {
-            val size = 50F
-            val font = Font(FontUtils.matchSimHei(FontStyle.BOLD), size)
-            val (line) = lines
-            for ((index, word) in line.withIndex()) {
-                surface.canvas.drawString(word.toString(), 430F, 80F + index * size, font, black)
-            }
-        }
-        2 -> {
-            val size = 50F
-            val font = Font(FontUtils.matchSimHei(FontStyle.BOLD), size)
-            val (first, second) = lines
-            for ((index, word) in first.withIndex()) {
-                surface.canvas.drawString(word.toString(), 380F, 80F + index * size, font, black)
-            }
-            for ((index, word) in second.withIndex()) {
-                surface.canvas.drawString(word.toString(), 450F, 80F + index * size, font, black)
-            }
-        }
-    }
-
-    return surface
 }
 
 /**
