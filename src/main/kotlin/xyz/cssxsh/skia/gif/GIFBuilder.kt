@@ -1,6 +1,5 @@
 package xyz.cssxsh.skia.gif
 
-
 import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.BufferUtil
 import java.nio.*
@@ -44,7 +43,9 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * Pixel Aspect Ratio
      * @see [LogicalScreenDescriptor.write]
      */
-    public fun ratio(size: Int): GIFBuilder = apply { ratio = size }
+    public fun ratio(size: Int): GIFBuilder = apply {
+        ratio = size
+    }
 
     public var global: ColorTable = ColorTable.Empty
 
@@ -52,12 +53,16 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * GlobalColorTable
      * @see [OctTreeQuantizer.quantize]
      */
-    public fun table(bitmap: Bitmap): GIFBuilder = apply { global = ColorTable(OctTreeQuantizer.quantize(bitmap, 256)) }
+    public fun table(bitmap: Bitmap): GIFBuilder = apply {
+        global = ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true)
+    }
 
     /**
      * GlobalColorTable
      */
-    public fun table(value: ColorTable): GIFBuilder = apply { global = value }
+    public fun table(value: ColorTable): GIFBuilder = apply {
+        global = value
+    }
 
     public var options: AnimationFrameInfo = AnimationFrameInfo(
         requiredFrame = -1,
@@ -74,7 +79,9 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * GlobalFrameOptions
      */
-    public fun options(block: AnimationFrameInfo.() -> Unit): GIFBuilder = apply { options.apply(block) }
+    public fun options(block: AnimationFrameInfo.() -> Unit): GIFBuilder = apply {
+        options.apply(block)
+    }
 
     public var frames: MutableList<Triple<Bitmap, ColorTable, AnimationFrameInfo>> = ArrayList()
 
@@ -87,7 +94,11 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         frames.add(Triple(bitmap, colors, options.withFrameRect(rect).apply(block)))
     }
 
-    public fun frame(bitmap: Bitmap, colors: ColorTable = ColorTable.Empty, info: AnimationFrameInfo): GIFBuilder = apply {
+    public fun frame(
+        bitmap: Bitmap,
+        colors: ColorTable = ColorTable.Empty,
+        info: AnimationFrameInfo
+    ): GIFBuilder = apply {
         frames.add(Triple(bitmap, colors, info))
     }
 
@@ -102,9 +113,15 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
             val table = when {
                 colors.exists() -> colors
                 global.exists() -> global
-                else -> ColorTable(OctTreeQuantizer.quantize(bitmap, 256))
+                else -> {
+                    if (info.alphaType == ColorAlphaType.OPAQUE) {
+                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true)
+                    } else {
+                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 255), sort = true)
+                    }
+                }
             }
-            val transparency = if (options.alphaType == ColorAlphaType.OPAQUE) null else table.background
+            val transparency = if (info.alphaType == ColorAlphaType.OPAQUE) null else table.transparency
 
             GraphicControlExtension.write(buffer, info.disposalMethod, false, transparency, info.duration)
 

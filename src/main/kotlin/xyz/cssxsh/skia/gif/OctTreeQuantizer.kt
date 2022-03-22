@@ -6,10 +6,10 @@ import org.jetbrains.skia.*
  * Implements qct-tree quantization.
  *
  *
- * The principle of algorithm: http://www.microsoft.com/msj/archive/S3F1.aspx
+ * The principle of algorithm: [http://www.microsoft.com/msj/archive/S3F1.aspx]
  *
  */
-public object OctTreeQuantizer {
+public class OctTreeQuantizer {
     private val mask = intArrayOf(0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01)
 
     private var leafCount = 0
@@ -34,7 +34,7 @@ public object OctTreeQuantizer {
         for (i in 0..7) {
             nodeList[i] = null
         }
-        return colors.toIntArray() + IntArray(maxColorCount - colors.size)
+        return colors.toIntArray()
     }
 
     private fun addColor(node_: Node?, color: Int, inLevel: Int): Boolean {
@@ -78,12 +78,11 @@ public object OctTreeQuantizer {
     }
 
     private fun reduceTree() {
-        var i: Int
         var redSum = 0
         var greenSum = 0
         var blueSum = 0
         var count = 0
-        i = 7
+        var i = 7
         while (i > 0) {
             if (nodeList[i] != null) break
             i--

@@ -25,7 +25,7 @@ public class LZWEncoder(private val colors: ColorTable, private val image: IntAr
         writeCode(table.getValue(CLEAR_CODE))
         for (rgb in image) {
             val index = colors.colors.indexOf(rgb)
-            processIndex(if (index != -1) index else colors.background)
+            processIndex(if (index != -1) index else colors.transparency)
         }
         writeCode(table.getValue(indexBuffer))
         writeCode(table.getValue(END_OF_INFO))
