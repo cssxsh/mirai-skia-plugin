@@ -11,6 +11,7 @@ import kotlin.jvm.*
  * @see Typeface
  * @see FontMgr
  * @see TypefaceFontProvider
+ * @see [https://docs.microsoft.com/en-us/typography/fonts/windows_10_font_list]
  */
 public object FontUtils {
 
@@ -63,18 +64,26 @@ public object FontUtils {
      * 获取指定的 [Typeface]
      */
     public fun matchFamilyStyle(familyName: String, style: FontStyle): Typeface? {
-        return instances.firstNotNullOfOrNull { provider -> provider.matchFamilyStyle(familyName, style) }
+        for (provider in instances) {
+            return provider.matchFamily(familyName).matchStyle(style) ?: continue
+        }
+        return null
     }
 
     /**
      * 获取指定的 [Typeface]
      */
     public fun matchFamiliesStyle(families: Array<String?>, style: FontStyle): Typeface? {
-        return instances.firstNotNullOfOrNull { provider -> provider.matchFamiliesStyle(families, style) }
+        for (provider in instances) {
+            for (familyName in families) {
+                return provider.matchFamily(familyName).matchStyle(style) ?: continue
+            }
+        }
+        return null
     }
 
     /**
-     * 获取指定的 [FontStyleSet]
+     * 获取指定的 [FontStyleSet] (count != 0)
      */
     public fun matchFamily(familyName: String): FontStyleSet? {
         for (provider in instances) {
@@ -112,19 +121,24 @@ public object FontUtils {
     public fun matchKaiTi(style: FontStyle): Typeface? = matchFamilyStyle("KaiTi", style)
 
     /**
-     * 隶书
-     */
-    public fun matchLiSu(style: FontStyle): Typeface? = matchFamilyStyle("LiSu", style)
-
-    /**
-     * 幼圆
-     */
-    public fun matchYouYuan(style: FontStyle): Typeface? = matchFamilyStyle("YouYuan", style)
-
-    /**
      * Arial
      */
     public fun matchArial(style: FontStyle): Typeface? = matchFamilyStyle("Arial", style)
+
+    /**
+     * Calibri
+     */
+    public fun matchCalibri(style: FontStyle): Typeface? = matchFamilyStyle("Calibri", style)
+
+    /**
+     * Consolas
+     */
+    public fun matchConsolas(style: FontStyle): Typeface? = matchFamilyStyle("Consolas", style)
+
+    /**
+     * Times New Roman
+     */
+    public fun matchTimesNewRoman(style: FontStyle): Typeface? = matchFamilyStyle("Times New Roman", style)
 
     /**
      * Helvetica
