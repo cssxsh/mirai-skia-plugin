@@ -144,4 +144,14 @@ public object FontUtils {
      * Helvetica
      */
     public fun matchHelvetica(style: FontStyle): Typeface? = matchFamilyStyle("Helvetica", style)
+
+    /**
+     * Liberation Sans
+     */
+    public fun matchLiberationSans(style: FontStyle): Typeface? = matchFamilyStyle("Liberation Sans", style)
+
+    /**
+     * Liberation Serif
+     */
+    public fun matchLiberationSerif(style: FontStyle): Typeface? = matchFamilyStyle("Liberation Serif", style)
 }
