@@ -54,7 +54,11 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * @see [OctTreeQuantizer.quantize]
      */
     public fun table(bitmap: Bitmap): GIFBuilder = apply {
-        global = ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true)
+        global = if (bitmap.computeIsOpaque()) {
+            ColorTable(OctTreeQuantizer().quantize(bitmap, 256), true, null)
+        } else {
+            ColorTable(OctTreeQuantizer().quantize(bitmap, 255), true)
+        }
     }
 
     /**
@@ -115,9 +119,9 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
                 global.exists() -> global
                 else -> {
                     if (info.alphaType == ColorAlphaType.OPAQUE || bitmap.computeIsOpaque()) {
-                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 256), sort = true, transparency = null)
+                        ColorTable(OctTreeQuantizer().quantize(bitmap, 256), true, null)
                     } else {
-                        ColorTable(colors = OctTreeQuantizer().quantize(bitmap, 255), sort = true)
+                        ColorTable(OctTreeQuantizer().quantize(bitmap, 255), true)
                     }
                 }
             }
