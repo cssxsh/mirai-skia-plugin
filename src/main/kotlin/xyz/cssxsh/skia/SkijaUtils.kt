@@ -3,6 +3,7 @@ package xyz.cssxsh.skia
 import org.jetbrains.skia.*
 import org.jetbrains.skia.svg.*
 import org.jsoup.parser.*
+import org.jsoup.select.*
 
 public fun FontMgr.makeFamilies(): Map<String, FontStyleSet> {
     val count = familiesCount
@@ -25,7 +26,7 @@ public fun FontMgr.makeFamilies(): Map<String, FontStyleSet> {
 public fun SVGDOM.Companion.makeFromString(xml: String): SVGDOM {
     val document = Parser.xmlParser().parseInput(xml, "")
     for (style in document.select("style")) {
-        val text = style?.text() ?: break
+        val text = style?.text() ?: continue
         var pos = 0
 
         while (true) {
@@ -35,18 +36,19 @@ public fun SVGDOM.Companion.makeFromString(xml: String): SVGDOM {
             if (after == -1) break
 
             val query = text.substring(pos, before)
-            val attributes = text.substring(before + 1, after).split(';')
+            val attributes = text.substring(before + 1, after)
+                .splitToSequence(';')
+                .map { it.split(':') }
+            val elements = try {
+                document.select(query)
+            } catch (_: Selector.SelectorParseException) {
+                pos = after + 1
+                continue
+            }
 
-            for (attribute in attributes) {
-                val key = attribute.substringBefore(':')
-                val value = attribute.substringAfter(':')
-
-                try {
-                    for (element in document.select(query)) {
-                        element.attr(key, value)
-                    }
-                } catch (_: org.jsoup.select.Selector.SelectorParseException) {
-                    //
+            for ((key, value) in attributes) {
+                for (element in elements) {
+                    element.attr(key, value)
                 }
             }
 
