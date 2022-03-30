@@ -2,7 +2,6 @@ package xyz.cssxsh.mirai.plugin
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.plugin.jvm.*
-import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
@@ -40,15 +39,17 @@ public object MiraiSkiaPlugin : KotlinPlugin(
 
                     subject.uploadImage(resource = pornhub(porn, hub).makeSnapshotResource())
                 }
-                """^#pet( \d+(?:\.\d+)?)?""".toRegex() findingReply { result ->
+                """^#pet\s*(\d+)?""".toRegex() findingReply { result ->
                     logger.info { "pet ${result.value}" }
-                    val delay = result.groups[1]?.value?.toDoubleOrNull() ?: 0.02
-                    val user = message.findIsInstance<At>()?.target?.let { (subject as? Group)?.get(it) } ?: sender
-                    val file = dataFolder.resolve("${user.id}.jpg")
-                    if (file.exists().not()) download(urlString = user.avatarUrl, folder = dataFolder).renameTo(file)
+                    val id = result.groups[1]?.value?.toLongOrNull()
+                        ?: message.findIsInstance<At>()?.target
+                        ?: sender.id
+                    val file = dataFolder.resolve("${id}.jpg")
+                    val url = "https://q.qlogo.cn/g?b=qq&nk=${id}&s=640"
+                    if (file.exists().not()) download(urlString = url, folder = dataFolder).renameTo(file)
                     val face = SkiaImage.makeFromEncoded(file.readBytes())
 
-                    subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face, delay), formatName = "gif"))
+                    subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face), formatName = "gif"))
                 }
                 """^#choyen\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
                     logger.info { "choyen ${result.value}" }
