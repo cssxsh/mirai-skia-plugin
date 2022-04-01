@@ -2,6 +2,7 @@ package xyz.cssxsh.skia
 
 import org.jetbrains.skia.*
 import org.jetbrains.skia.svg.*
+import org.jsoup.nodes.*
 import org.jsoup.parser.*
 import org.jsoup.select.*
 
@@ -20,11 +21,19 @@ public fun FontMgr.makeFamilies(): Map<String, FontStyleSet> {
 }
 
 /**
- * 将 Style 写入具体的 Element 中，修正SVG绘图结果
+ * 从 xml 读取 SVGDOM
  * @see org.jsoup.parser.Parser
+ * @see SVGDOM.Companion.makeFromXml
  */
-public fun SVGDOM.Companion.makeFromString(xml: String): SVGDOM {
-    val document = Parser.xmlParser().parseInput(xml, "")
+public fun SVGDOM.Companion.makeFromString(xml: String, baseUri: String = ""): SVGDOM {
+    return makeFromXml(document = Parser.xmlParser().parseInput(xml, baseUri))
+}
+
+/**
+ * 将 Style 写入具体的 Element 中，修正SVG绘图结果
+ * @see SVGDOM.Companion.makeFromString
+ */
+public fun SVGDOM.Companion.makeFromXml(document: Document): SVGDOM {
     for (style in document.select("style")) {
         val text = style?.text() ?: continue
         var pos = 0
@@ -38,6 +47,7 @@ public fun SVGDOM.Companion.makeFromString(xml: String): SVGDOM {
             val query = text.substring(pos, before)
             val attributes = text.substring(before + 1, after)
                 .splitToSequence(';')
+                .filter { it.isNotBlank() }
                 .map { it.split(':') }
             val elements = try {
                 document.select(query)

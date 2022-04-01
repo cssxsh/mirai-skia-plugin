@@ -68,10 +68,14 @@ internal class ExampleKtTest {
 
     @Test
     fun svg() {
-        val svg = SVGDOM.makeFromString(xml = File("./example/Osu.svg").readText())
-        val surface = Surface.makeRasterN32Premul(512, 512)
-        svg.setContainerSize(512F, 512F)
-        svg.render(surface.canvas)
+        val surface = Surface.makeRasterN32Premul(350, 350)
+        val size = Point(350F, 350F)
+        val background = SVGDOM.makeFromString(xml = File("./example/osu-logo-triangles.svg").readText())
+        background.setContainerSize(size)
+        background.render(surface.canvas)
+        val text = SVGDOM.makeFromString(xml = File("./example/osu-logo-white.svg").readText())
+        text.setContainerSize(size)
+        text.render(surface.canvas)
 
         val image = surface.makeImageSnapshot()
         val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
