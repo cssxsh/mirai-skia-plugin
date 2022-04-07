@@ -12,6 +12,7 @@ version = "1.0.3"
 repositories {
     mavenLocal()
     mavenCentral()
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 mavenCentralPublish {
@@ -24,15 +25,15 @@ mavenCentralPublish {
 }
 
 dependencies {
-    api("org.jetbrains.skiko:skiko-awt:0.7.16") {
+    api("org.jetbrains.skiko:skiko-awt:0.7.18") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
-    api("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.16")
-    api("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.16")
-    api("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.16")
-    api("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.16")
-    api("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.16")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.18")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.18")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.18")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.18")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.18")
     compileOnly("net.mamoe:mirai-core-utils:2.10.1")
     compileOnly("org.jsoup:jsoup:1.14.3")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
