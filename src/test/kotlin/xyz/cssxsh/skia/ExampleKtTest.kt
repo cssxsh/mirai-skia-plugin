@@ -70,10 +70,10 @@ internal class ExampleKtTest {
     fun svg() {
         val surface = Surface.makeRasterN32Premul(350, 350)
         val size = Point(350F, 350F)
-        val background = SVGDOM.makeFromString(xml = File("./example/osu-logo-triangles.svg").readText())
+        val background = SVGDOM.makeFromFile(xml = File("./example/osu-logo-triangles.svg"))
         background.setContainerSize(size)
         background.render(surface.canvas)
-        val text = SVGDOM.makeFromString(xml = File("./example/osu-logo-white.svg").readText())
+        val text = SVGDOM.makeFromFile(xml = File("./example/osu-logo-white.svg"))
         text.setContainerSize(size)
         text.render(surface.canvas)
 

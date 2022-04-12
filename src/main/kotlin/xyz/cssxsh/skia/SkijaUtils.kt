@@ -5,6 +5,7 @@ import org.jetbrains.skia.svg.*
 import org.jsoup.nodes.*
 import org.jsoup.parser.*
 import org.jsoup.select.*
+import java.io.*
 
 public fun FontMgr.makeFamilies(): Map<String, FontStyleSet> {
     val count = familiesCount
@@ -27,6 +28,15 @@ public fun FontMgr.makeFamilies(): Map<String, FontStyleSet> {
  */
 public fun SVGDOM.Companion.makeFromString(xml: String, baseUri: String = ""): SVGDOM {
     return makeFromXml(document = Parser.xmlParser().parseInput(xml, baseUri))
+}
+
+/**
+ * 从 file 读取 SVGDOM
+ * @see org.jsoup.parser.Parser
+ * @see SVGDOM.Companion.makeFromXml
+ */
+public fun SVGDOM.Companion.makeFromFile(xml: File, baseUri: String = ""): SVGDOM {
+    return makeFromXml(document = xml.reader().use { Parser.xmlParser().parseInput(it, baseUri) })
 }
 
 /**
@@ -69,4 +79,13 @@ public fun SVGDOM.Companion.makeFromXml(document: Document): SVGDOM {
     }
 
     return SVGDOM(data = Data.makeFromBytes(bytes = document.toString().toByteArray()))
+}
+
+/**
+ * @see SVGDOM.setContainerSize
+ */
+public fun SVGDOM.makeImageSnapshot(width: Int, height: Int): Image {
+    setContainerSize(width.toFloat(), height.toFloat())
+
+    return Surface.makeRasterN32Premul(350, 350).use { it.makeImageSnapshot() }
 }
