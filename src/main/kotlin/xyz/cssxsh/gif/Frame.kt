@@ -2,9 +2,10 @@ package xyz.cssxsh.gif
 
 import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.*
+import java.io.*
 
 @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-public class Frame internal constructor(ptr: NativePointer) : Native(ptr), AutoCloseable {
+public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Closeable {
     public constructor() : this(ptr = default())
 
     public var delay: Int

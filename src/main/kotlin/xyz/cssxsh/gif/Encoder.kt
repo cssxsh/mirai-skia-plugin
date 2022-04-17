@@ -4,8 +4,11 @@ import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.*
 import java.io.*
 
+/**
+ * 编码器最终要调用 [close] 完成对文件尾的处理
+ */
 @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), AutoCloseable {
+public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Closeable {
     public constructor(path: String, width: Int, height: Int, palette: ByteArray = ByteArray(0)) :
         this(ptr = file(path, width, height, palette))
 
@@ -30,7 +33,7 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Aut
         writeBitmap(_ptr, bitmap._ptr, mills / 10, disposal.ordinal)
     }
 
-    override fun close() {
+    public override fun close() {
         close(_ptr)
     }
 

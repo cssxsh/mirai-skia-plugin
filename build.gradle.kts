@@ -49,6 +49,8 @@ kotlin {
 tasks {
     test {
         useJUnitPlatform()
+
+        systemProperty("java.library.path", workingDir.resolve("jni").absolutePath)
     }
 }
 
