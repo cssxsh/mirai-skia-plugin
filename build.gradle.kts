@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.0.3"
+version = "1.0.4-M1"
 
 repositories {
     mavenLocal()
@@ -28,6 +28,10 @@ dependencies {
     api("org.jetbrains.skiko:skiko-awt:0.7.18") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
+    }
+    api(project(":gif")) {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.skiko")
     }
     implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.18")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.18")

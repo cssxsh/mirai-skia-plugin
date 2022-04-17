@@ -14,7 +14,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.0.3",
+        version = "1.0.4",
     ) {
         author("cssxsh")
     }
@@ -25,6 +25,12 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         launch {
             loadTypeface(folder = dataFolder.resolve("fonts"))
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
+
+            try {
+                System.loadLibrary("gif-${hostId}")
+            } catch (cause: Throwable) {
+                logger.warning { cause.message }
+            }
         }
 
         val test = System.getProperty("xyz.cssxsh.skia.test", "false").toBoolean()
@@ -33,14 +39,26 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 loadFace(folder = dataFolder.resolve("face"))
             }
             globalEventChannel().subscribeMessages {
+                """^#face\s*(\d+)?""".toRegex() findingReply { result ->
+                    logger.info { result.value }
+                    val id = result.groups[1]?.value?.toLongOrNull()
+                        ?: message.findIsInstance<At>()?.target
+                        ?: sender.id
+                    val url = "https://q.qlogo.cn/g?b=qq&nk=${id}&s=640"
+                    val file = dataFolder.resolve("${id}.jpg")
+                    file.delete()
+                    download(urlString = url, folder = dataFolder).renameTo(file)
+
+                    subject.uploadImage(file)
+                }
                 """^#ph\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
-                    logger.info { "ph ${result.value}" }
+                    logger.info { result.value }
                     val (porn, hub) = result.destructured
 
                     subject.uploadImage(resource = pornhub(porn, hub).makeSnapshotResource())
                 }
                 """^#pet\s*(\d+)?""".toRegex() findingReply { result ->
-                    logger.info { "pet ${result.value}" }
+                    logger.info { result.value }
                     val id = result.groups[1]?.value?.toLongOrNull()
                         ?: message.findIsInstance<At>()?.target
                         ?: sender.id
@@ -52,7 +70,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                     subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face), formatName = "gif"))
                 }
                 """^#choyen\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
-                    logger.info { "choyen ${result.value}" }
+                    logger.info { result.value }
                     val (top, bottom) = result.destructured
 
                     subject.uploadImage(resource = choyen(top, bottom).makeSnapshotResource())
