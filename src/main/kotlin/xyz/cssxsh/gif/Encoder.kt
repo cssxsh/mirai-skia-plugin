@@ -25,12 +25,12 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
         writeFrame(_ptr, frame._ptr)
     }
 
-    public fun writeImage(image: Image, mills: Int, disposal: AnimationDisposalMode) {
-        writeImage(_ptr, image._ptr, mills / 10, disposal.ordinal)
+    public fun writeImage(image: Image, mills: Int, disposal: AnimationDisposalMode, speed: Int = 1) {
+        writeImage(_ptr, image._ptr, mills / 10, disposal.ordinal, speed)
     }
 
-    public fun writeBitmap(bitmap: Bitmap, mills: Int, disposal: AnimationDisposalMode) {
-        writeBitmap(_ptr, bitmap._ptr, mills / 10, disposal.ordinal)
+    public fun writeBitmap(bitmap: Bitmap, mills: Int, disposal: AnimationDisposalMode, speed: Int = 1) {
+        writeBitmap(_ptr, bitmap._ptr, mills / 10, disposal.ordinal, speed)
     }
 
     public override fun close() {
@@ -49,10 +49,10 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
         external fun writeFrame(self: NativePointer, frame: NativePointer)
 
         @JvmStatic
-        external fun writeImage(self: NativePointer, image: NativePointer, centi: Int, dispose: Int)
+        external fun writeImage(self: NativePointer, image: NativePointer, centi: Int, dispose: Int, speed: Int)
 
         @JvmStatic
-        external fun writeBitmap(self: NativePointer, bitmap: NativePointer, centi: Int, dispose: Int)
+        external fun writeBitmap(self: NativePointer, bitmap: NativePointer, centi: Int, dispose: Int, speed: Int)
 
         @JvmStatic
         external fun close(self: NativePointer): NativePointer

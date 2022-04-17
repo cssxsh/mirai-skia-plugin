@@ -51,16 +51,16 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
             return Frame(ptr = fromRGBASpeed(width, height, pixels, speed))
         }
 
-        public fun fromImage(image: Image): Frame {
-            return Frame(ptr = fromImage(image._ptr))
+        public fun fromImage(image: Image, speed: Int = 1): Frame {
+            return Frame(ptr = fromImage(image._ptr, speed))
         }
 
-        public fun fromBitmap(bitmap: Bitmap): Frame {
-            return Frame(ptr = fromBitmap(bitmap._ptr))
+        public fun fromBitmap(bitmap: Bitmap, speed: Int = 1): Frame {
+            return Frame(ptr = fromBitmap(bitmap._ptr, speed))
         }
 
-        public fun fromPixmap(pixmap: Pixmap): Frame {
-            return Frame(ptr = fromPixmap(pixmap._ptr))
+        public fun fromPixmap(pixmap: Pixmap, speed: Int = 1): Frame {
+            return Frame(ptr = fromPixmap(pixmap._ptr, speed))
         }
 
         @JvmStatic
@@ -90,13 +90,13 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
         internal external fun fromRGBASpeed(width: Int, height: Int, bytes: ByteArray, speed: Int): NativePointer
 
         @JvmStatic
-        internal external fun fromImage(image: NativePointer): NativePointer
+        internal external fun fromImage(image: NativePointer, speed: Int): NativePointer
 
         @JvmStatic
-        internal external fun fromBitmap(bitmap: NativePointer): NativePointer
+        internal external fun fromBitmap(bitmap: NativePointer, speed: Int): NativePointer
 
         @JvmStatic
-        internal external fun fromPixmap(pixmap: NativePointer): NativePointer
+        internal external fun fromPixmap(pixmap: NativePointer, speed: Int): NativePointer
 
         @JvmStatic
         internal external fun close(ptr: NativePointer): NativePointer
