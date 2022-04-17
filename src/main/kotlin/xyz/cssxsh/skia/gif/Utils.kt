@@ -3,12 +3,12 @@ package xyz.cssxsh.skia.gif
 import org.jetbrains.skia.*
 
 internal fun Int.asUnsignedShort(): Short {
-    check(this in 0..0xFFFF)
+    check(this in 0..0xFFFF) { toString(16) }
     return toShort()
 }
 
 internal fun Int.asUnsignedByte(): Byte {
-    check(this in 0..0xFF)
+    check(this in 0..0xFF) { toString(16) }
     return toByte()
 }
 

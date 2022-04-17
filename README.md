@@ -15,3 +15,10 @@ Be based on <https://github.com/JetBrains/skiko>
 ## Example
 
 [Example](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+
+## GIF
+
+由于 Skiko 没有携带 GIF 编码器，
+这里提供两个实现
+* [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) 
+* [rust-bindings](https://github.com/cssxsh/gif-jni)
