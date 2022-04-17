@@ -36,7 +36,7 @@ public fun SVGDOM.Companion.makeFromString(xml: String, baseUri: String = ""): S
  * @see SVGDOM.Companion.makeFromXml
  */
 public fun SVGDOM.Companion.makeFromFile(xml: File, baseUri: String = ""): SVGDOM {
-    return makeFromXml(document = xml.reader().use { Parser.xmlParser().parseInput(it, baseUri) })
+    return makeFromXml(document = xml.bufferedReader().use { Parser.xmlParser().parseInput(it, baseUri) })
 }
 
 /**
