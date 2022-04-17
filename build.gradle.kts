@@ -29,10 +29,6 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
-    api(project(":gif")) {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "org.jetbrains.skiko")
-    }
     implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.18")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.18")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.18")

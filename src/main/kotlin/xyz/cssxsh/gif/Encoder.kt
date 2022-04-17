@@ -26,6 +26,10 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Aut
         writeImage(_ptr, image._ptr, mills / 10, disposal.ordinal)
     }
 
+    public fun writeBitmap(bitmap: Bitmap, mills: Int, disposal: AnimationDisposalMode) {
+        writeBitmap(_ptr, bitmap._ptr, mills / 10, disposal.ordinal)
+    }
+
     override fun close() {
         close(_ptr)
     }
@@ -43,6 +47,9 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Aut
 
         @JvmStatic
         external fun writeImage(self: NativePointer, image: NativePointer, centi: Int, dispose: Int)
+
+        @JvmStatic
+        external fun writeBitmap(self: NativePointer, bitmap: NativePointer, centi: Int, dispose: Int)
 
         @JvmStatic
         external fun close(self: NativePointer): NativePointer
