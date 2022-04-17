@@ -2,6 +2,8 @@ package xyz.cssxsh.mirai.plugin
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
