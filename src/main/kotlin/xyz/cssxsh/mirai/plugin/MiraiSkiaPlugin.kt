@@ -29,7 +29,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
 
             try {
-                System.loadLibrary("gif-${hostId}")
+                xyz.cssxsh.gif.Library.staticLoad()
             } catch (cause: Throwable) {
                 logger.warning { cause.message }
             }

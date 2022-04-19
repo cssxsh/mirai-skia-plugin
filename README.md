@@ -21,4 +21,4 @@ Be based on <https://github.com/JetBrains/skiko>
 由于 Skiko 没有携带 GIF 编码器，
 这里提供两个实现
 * [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) 
-* [rust-bindings](https://github.com/cssxsh/gif-jni)
+* [rust](src/main/kotlin/xyz/cssxsh/gif) (Base on [JNI](https://github.com/cssxsh/gif-jni))

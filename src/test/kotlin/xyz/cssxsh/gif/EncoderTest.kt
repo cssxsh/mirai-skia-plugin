@@ -1,21 +1,19 @@
 package xyz.cssxsh.gif
 
 import org.jetbrains.skia.*
-import org.jetbrains.skiko.hostId
 import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class EncoderTest {
     init {
-        System.loadLibrary("gif-$hostId")
+        System.setProperty(Library.GIF_LIBRARY_PATH_PROPERTY, "./jni")
     }
 
     @Test
     fun build() {
         val face = Image.makeFromEncoded(File("./example/face.png").readBytes())
-        val sprite =  Image.makeFromEncoded(File("./example/sprite.png").readBytes())
-        val info = sprite.imageInfo.withColorType(ColorType.RGBA_8888).withWidth(112 * 5)
-        val surface = Surface.makeRaster(info)
+        val sprite = Image.makeFromEncoded(File("./example/sprite.png").readBytes())
+        val surface = Surface.makeRasterN32Premul(112 * 5, 112)
         val rects = listOf(
             // 0, 0, 0, 0
             Rect.makeXYWH(21F, 21F, 91F, 91F),

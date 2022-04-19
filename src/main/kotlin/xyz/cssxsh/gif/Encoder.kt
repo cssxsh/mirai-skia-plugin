@@ -9,11 +9,11 @@ import java.io.*
  */
 @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
 public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Closeable {
-    public constructor(path: String, width: Int, height: Int, palette: ByteArray = ByteArray(0)) :
-        this(ptr = file(path, width, height, palette))
+    public constructor(path: String, width: Int, height: Int, palette: Data = Data.makeEmpty()) :
+        this(ptr = file(path, width, height, palette._ptr))
 
-    public constructor(file: File, width: Int, height: Int, palette: ByteArray = ByteArray(0)) :
-        this(ptr = file(file.path, width, height, palette))
+    public constructor(file: File, width: Int, height: Int, palette: Data = Data.makeEmpty()) :
+        this(ptr = file(file.path, width, height, palette._ptr))
 
     public var repeat: Int = 0
         set(value) {
@@ -38,9 +38,12 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
     }
 
     private companion object {
+        init {
+            Library.staticLoad()
+        }
 
         @JvmStatic
-        external fun file(path: String, width: Int, height: Int, palette: ByteArray): NativePointer
+        external fun file(path: String, width: Int, height: Int, palette: NativePointer): NativePointer
 
         @JvmStatic
         external fun setRepeat(self: NativePointer, value: Int)

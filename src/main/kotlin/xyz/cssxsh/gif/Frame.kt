@@ -20,35 +20,32 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
         get() = getRect(self = _ptr).let { (top, left, width, height) -> IRect.makeXYWH(top, left, width, height) }
         set(value) = setRect(self = _ptr, value.top, value.left, value.width, value.height)
 
-    public val palette: ByteArray
-        get() = getPalette(self = _ptr)
+    public val palette: Data
+        get() = Data(ptr = getPalette(self = _ptr))
 
     override fun close() {
         close(ptr = _ptr)
     }
 
     public companion object {
-
-        public fun fromIndexedPixels(width: Int, height: Int, pixels: ByteArray, transparent: Int?): Frame {
-            return Frame(ptr = fromIndexedPixels(width, height, pixels, transparent ?: -1))
+        init {
+            Library.staticLoad()
         }
 
-        public fun fromPalettePixels(
-            width: Int,
-            height: Int,
-            pixels: ByteArray,
-            palette: ByteArray,
-            transparent: Int?
-        ): Frame {
-            return Frame(ptr = fromPalettePixels(width, height, pixels, palette, transparent ?: -1))
+        public fun fromIndexedPixels(width: Int, height: Int, pixels: Data, transparent: Int?): Frame {
+            return Frame(ptr = fromIndexedPixels(width, height, pixels._ptr, transparent ?: -1))
         }
 
-        public fun fromRGBSpeed(pixels: ByteArray, width: Int, height: Int, speed: Int = 0): Frame {
-            return Frame(ptr = fromRGBSpeed(width, height, pixels, speed))
+        public fun fromPalettePixels(width: Int, height: Int, pixels: Data, palette: Data, transparent: Int?): Frame {
+            return Frame(ptr = fromPalettePixels(width, height, pixels._ptr, palette._ptr, transparent ?: -1))
         }
 
-        public fun fromRGBASpeed(pixels: ByteArray, width: Int, height: Int, speed: Int = 0): Frame {
-            return Frame(ptr = fromRGBASpeed(width, height, pixels, speed))
+        public fun fromRGBSpeed(pixels: Data, width: Int, height: Int, speed: Int = 0): Frame {
+            return Frame(ptr = fromRGBSpeed(width, height, pixels._ptr, speed))
+        }
+
+        public fun fromRGBASpeed(pixels: Data, width: Int, height: Int, speed: Int = 0): Frame {
+            return Frame(ptr = fromRGBASpeed(width, height, pixels._ptr, speed))
         }
 
         public fun fromImage(image: Image, speed: Int = 1): Frame {
@@ -70,7 +67,7 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
         internal external fun fromIndexedPixels(
             width: Int,
             height: Int,
-            pixels: ByteArray,
+            pixels: NativePointer,
             transparent: Int
         ): NativePointer
 
@@ -78,16 +75,16 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
         internal external fun fromPalettePixels(
             width: Int,
             height: Int,
-            pixels: ByteArray,
-            palette: ByteArray,
+            pixels: NativePointer,
+            palette: NativePointer,
             transparent: Int
         ): NativePointer
 
         @JvmStatic
-        internal external fun fromRGBSpeed(width: Int, height: Int, bytes: ByteArray, speed: Int): NativePointer
+        internal external fun fromRGBSpeed(width: Int, height: Int, bytes: NativePointer, speed: Int): NativePointer
 
         @JvmStatic
-        internal external fun fromRGBASpeed(width: Int, height: Int, bytes: ByteArray, speed: Int): NativePointer
+        internal external fun fromRGBASpeed(width: Int, height: Int, bytes: NativePointer, speed: Int): NativePointer
 
         @JvmStatic
         internal external fun fromImage(image: NativePointer, speed: Int): NativePointer
@@ -120,6 +117,6 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
         internal external fun setRect(self: NativePointer, top: Int, left: Int, width: Int, height: Int)
 
         @JvmStatic
-        internal external fun getPalette(self: NativePointer): ByteArray
+        internal external fun getPalette(self: NativePointer): NativePointer
     }
 }
