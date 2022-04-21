@@ -87,5 +87,8 @@ public fun SVGDOM.Companion.makeFromXml(document: Document): SVGDOM {
 public fun SVGDOM.makeImageSnapshot(width: Int, height: Int): Image {
     setContainerSize(width.toFloat(), height.toFloat())
 
-    return Surface.makeRasterN32Premul(350, 350).use { it.makeImageSnapshot() }
+    return Surface.makeRasterN32Premul(width, height).use { surface ->
+        render(surface.canvas)
+        surface.makeImageSnapshot()
+    }
 }
