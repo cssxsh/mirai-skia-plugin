@@ -2,13 +2,10 @@ package xyz.cssxsh.gif
 
 import org.jetbrains.skia.*
 import org.junit.jupiter.api.Test
+import xyz.cssxsh.skia.*
 import java.io.File
 
 internal class EncoderTest {
-    init {
-        System.setProperty(Library.GIF_LIBRARY_PATH_PROPERTY, "./jni")
-    }
-
     @Test
     fun build() {
         val face = Image.makeFromEncoded(File("./example/face.png").readBytes())
@@ -45,5 +42,12 @@ internal class EncoderTest {
             }
 
         }
+    }
+
+    @Test
+    fun dear() {
+        val face = Image.makeFromEncoded(File("./run/anti.jpg").readBytes())
+        System.setProperty(DEAR_ORIGIN, "./example/dear.gif")
+        dear(face).renameTo(File("./run/dear.${System.currentTimeMillis()}.gif"))
     }
 }

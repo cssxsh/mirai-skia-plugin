@@ -163,4 +163,6 @@ public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
     folder.mkdirs()
     val sprite = download(urlString = "https://benisland.neocities.org/petpet/img/sprite.png", folder)
     System.setProperty(PET_PET_SPRITE, sprite.absolutePath)
+    val origin = download(urlString = "https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif", folder)
+    System.setProperty(DEAR_ORIGIN, origin.absolutePath)
 }

@@ -1,8 +1,10 @@
 package xyz.cssxsh.skia
 
 import org.jetbrains.skia.*
+import xyz.cssxsh.gif.*
 import xyz.cssxsh.skia.gif.*
 import java.io.*
+import java.nio.file.*
 
 /**
  * 构造 PornPub Logo
@@ -264,4 +266,63 @@ public fun choyen(top: String, bottom: String): Surface {
         })
     }
     return surface
+}
+
+internal const val DEAR_ORIGIN = "xyz.cssxsh.skia.dear"
+
+/**
+ * 构造 亲亲 表情
+ * @return 临时文件
+ */
+public fun dear(face: Image): File {
+    val codec = try {
+        Codec.makeFromData(Data.makeFromBytes(File(System.getProperty(DEAR_ORIGIN, "dear.gif")).readBytes()))
+    } catch (cause: Throwable) {
+        throw IllegalStateException(
+            "please download https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif , file path set property $DEAR_ORIGIN",
+            cause
+        )
+    }
+    val temp = Files.createTempFile("dear", "gif").toFile()
+    val surface = Surface.makeRaster(codec.imageInfo)
+    val bitmap = Bitmap().apply { allocPixels(codec.imageInfo) }
+    val mode = FilterMipmap(FilterMode.LINEAR, MipmapMode.NEAREST)
+    val rect = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
+    val rects = listOf(
+        Rect.makeXYWH(48F, 118F, 60F, 60F),
+        Rect.makeXYWH(70F, 110F, 55F, 60F),
+        Rect.makeXYWH(78F, 108F, 55F, 65F),
+        Rect.makeXYWH(54F, 125F, 60F, 60F),
+        Rect.makeXYWH(65F, 121F, 60F, 70F),
+        Rect.makeXYWH(69F, 121F, 56F, 66F),
+        Rect.makeXYWH(24F, 148F, 56F, 56F),
+        Rect.makeXYWH(30F, 130F, 70F, 60F),
+        Rect.makeXYWH(75F, 110F, 50F, 70F),
+        Rect.makeXYWH(56F, 120F, 50F, 60F),
+        Rect.makeXYWH(75F, 118F, 60F, 65F),
+        Rect.makeXYWH(46F, 136F, 55F, 70F),
+        Rect.makeXYWH(23F, 151F, 68F, 58F),
+    )
+
+    Encoder(temp, surface.width, surface.height).use { encoder ->
+        encoder.repeat = -1
+        for (index in 0 until codec.frameCount) {
+            codec.readPixels(bitmap, index)
+            surface.writePixels(bitmap, 0, 0)
+            surface.canvas.drawImageRect(
+                image = face,
+                src = rect,
+                dst = rects[index],
+                samplingMode = mode,
+                paint = null,
+                strict = false
+            )
+
+            val info = codec.getFrameInfo(index)
+            val image = surface.makeImageSnapshot()
+            encoder.writeImage(image, info.duration, info.disposalMethod)
+        }
+    }
+
+    return temp
 }

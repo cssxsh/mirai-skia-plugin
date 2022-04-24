@@ -58,6 +58,6 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
         external fun writeBitmap(self: NativePointer, bitmap: NativePointer, centi: Int, dispose: Int, speed: Int)
 
         @JvmStatic
-        external fun close(self: NativePointer): NativePointer
+        external fun close(self: NativePointer)
     }
 }

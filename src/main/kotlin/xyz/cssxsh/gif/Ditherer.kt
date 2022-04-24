@@ -8,7 +8,6 @@ public interface Ditherer {
 
     public fun handle(bitmap: Bitmap, palette: Data): Data
 
-
     public object Atkinson : Ditherer {
         private external fun native(bitmap: NativePointer, palette: NativePointer): NativePointer
 

@@ -1,10 +1,8 @@
 package xyz.cssxsh.gif
 
 import org.jetbrains.skiko.*
-import org.jetbrains.skiko.Library
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
+import java.io.*
+import java.nio.file.*
 import java.util.concurrent.atomic.*
 
 /**
@@ -82,7 +80,7 @@ public object Library {
         )
         val hash = hashResourceStream.use { it.bufferedReader().readLine() }
 
-        val cacheDir = File(File(cacheRoot), hash)
+        val cacheDir = File(cacheRoot, hash)
         cacheDir.mkdirs()
         val library = unpackIfNeeded(cacheDir, platformName)
         loadLibraryOrCopy(library)
