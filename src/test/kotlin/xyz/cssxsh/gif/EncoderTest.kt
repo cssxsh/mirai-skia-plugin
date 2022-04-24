@@ -46,8 +46,8 @@ internal class EncoderTest {
 
     @Test
     fun dear() {
-        val face = Image.makeFromEncoded(File("./run/anti.jpg").readBytes())
+        val face = Image.makeFromEncoded(File("./example/face.png").readBytes())
         System.setProperty(DEAR_ORIGIN, "./example/dear.gif")
-        dear(face).renameTo(File("./run/dear.${System.currentTimeMillis()}.gif"))
+        dear(face).renameTo(File("./run/dear.gif"))
     }
 }
