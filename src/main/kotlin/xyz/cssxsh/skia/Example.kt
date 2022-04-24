@@ -16,10 +16,12 @@ public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
     val yellow = Paint().setARGB(0xFF, 0xFF, 0x90, 0x00)
 
     val surface = Surface.makeRasterN32Premul((prefix.width + suffix.width + 50).toInt(), (suffix.height + 40).toInt())
-    surface.canvas.clear(black.color)
-    surface.canvas.drawTextLine(prefix, 10F, 20 - font.metrics.ascent, white)
-    surface.canvas.drawRRect(RRect.makeXYWH(prefix.width + 15, 15F, suffix.width + 20, suffix.height + 10, 10F), yellow)
-    surface.canvas.drawTextLine(suffix, prefix.width + 25, 20 - font.metrics.ascent, black)
+    with(surface.canvas) {
+        clear(black.color)
+        drawTextLine(prefix, 10F, 20 - font.metrics.ascent, white)
+        drawRRect(RRect.makeXYWH(prefix.width + 15, 15F, suffix.width + 20, suffix.height + 10, 10F), yellow)
+        drawTextLine(suffix, prefix.width + 25, 20 - font.metrics.ascent, black)
+    }
 
     return surface
 }
@@ -54,10 +56,23 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
         // -4, 0, 0, 0
         Rect.makeXYWH(448F + 21F - 4F, 21F, 91F, 91F)
     )
+    val mode = FilterMipmap(FilterMode.LINEAR, MipmapMode.NEAREST)
+    val source = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
 
-    for (rect in rects) surface.canvas.drawImageRect(face, rect)
+    with(surface.canvas) {
+        for (rect in rects) {
+            drawImageRect(
+                image = face,
+                src = source,
+                dst = rect,
+                samplingMode = mode,
+                paint = null,
+                strict = true
+            )
+        }
 
-    surface.canvas.drawImage(sprite, 0F, 0F)
+        drawImage(sprite, 0F, 0F)
+    }
 
     val images = (0 until 5).map { index ->
         val rect = IRect.makeXYWH(112 * index, 0, 112, 112)
