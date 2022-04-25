@@ -49,6 +49,24 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
     }
 }
 
+internal suspend fun avatar(id: Long, size: Int, folder: File): File = supervisorScope {
+    http.get<HttpStatement>("https://q.qlogo.cn/g?b=qq&nk=${id}&s=${size}").execute { response ->
+        val target = folder.resolve("${id}.${response.contentType()?.contentSubtype}")
+
+        if (target.exists().not() || target.lastModified() < (response.lastModified()?.time ?: 0)) {
+            target.outputStream().use { output ->
+                val channel: ByteReadChannel = response.receive()
+
+                while (!channel.isClosedForRead) channel.copyTo(output)
+            }
+        } else {
+            response.call.cancel("文件 ${target.name} 已存在，跳过下载")
+        }
+
+        target
+    }
+}
+
 internal fun sevenZA(folder: File): File {
     val os = System.getProperty("os.name").lowercase()
     val arch = System.getProperty("os.arch")

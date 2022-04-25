@@ -3,7 +3,6 @@ package xyz.cssxsh.mirai.plugin
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.contact.*
-import net.mamoe.mirai.contact.Contact.Companion.uploadImage
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.*
@@ -42,56 +41,40 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 loadFace(folder = dataFolder.resolve("face"))
             }
             globalEventChannel().subscribeMessages {
-                """^#face\s*(\d+)?""".toRegex() findingReply { result ->
-                    logger.info { result.value }
-                    val id = result.groups[1]?.value?.toLongOrNull()
-                        ?: message.findIsInstance<At>()?.target
-                        ?: sender.id
-                    val url = "https://q.qlogo.cn/g?b=qq&nk=${id}&s=640"
-                    val file = dataFolder.resolve("${id}.jpg")
-                    file.delete()
-                    download(urlString = url, folder = dataFolder).renameTo(file)
-
-                    subject.uploadImage(file)
-                }
                 """^#ph\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
                     logger.info { result.value }
                     val (porn, hub) = result.destructured
 
-                    subject.uploadImage(resource = pornhub(porn, hub).makeSnapshotResource())
+                    pornhub(porn, hub).makeSnapshotResource()
+                        .use { resource -> subject.uploadImage(resource = resource) }
                 }
                 """^#pet\s*(\d+)?""".toRegex() findingReply { result ->
                     logger.info { result.value }
                     val id = result.groups[1]?.value?.toLongOrNull()
                         ?: message.findIsInstance<At>()?.target
                         ?: sender.id
-                    val file = dataFolder.resolve("${id}.jpg")
-                    val url = "https://q.qlogo.cn/g?b=qq&nk=${id}&s=640"
-                    if (file.exists().not()) download(urlString = url, folder = dataFolder).renameTo(file)
-                    val face = SkiaImage.makeFromEncoded(file.readBytes())
+                    val face = SkiaImage.makeFromEncoded(avatar(id = id, size = 140, folder = dataFolder).readBytes())
 
-                    subject.uploadImage(resource = SkiaExternalResource(origin = petpet(face), formatName = "gif"))
+                    SkiaExternalResource(origin = petpet(face), formatName = "gif")
+                        .use { resource -> subject.uploadImage(resource = resource) }
                 }
                 """^#dear\s*(\d+)?""".toRegex() findingReply { result ->
                     logger.info { result.value }
                     val id = result.groups[1]?.value?.toLongOrNull()
                         ?: message.findIsInstance<At>()?.target
                         ?: sender.id
-                    val file = dataFolder.resolve("${id}.jpg")
-                    val url = "https://q.qlogo.cn/g?b=qq&nk=${id}&s=640"
-                    if (file.exists().not()) download(urlString = url, folder = dataFolder).renameTo(file)
-                    val face = SkiaImage.makeFromEncoded(file.readBytes())
+                    val face = SkiaImage.makeFromEncoded(avatar(id = id, size = 140, folder = dataFolder).readBytes())
                     val dear = dear(face)
 
-                    dear.toExternalResource().use { resource ->
-                        subject.uploadImage(resource = resource)
-                    }
+                    dear.toExternalResource()
+                        .use { resource -> subject.uploadImage(resource = resource) }
                 }
                 """^#choyen\s+(\S+)\s+(\S+)""".toRegex() findingReply { result ->
                     logger.info { result.value }
                     val (top, bottom) = result.destructured
 
-                    subject.uploadImage(resource = choyen(top, bottom).makeSnapshotResource())
+                    choyen(top, bottom).makeSnapshotResource()
+                        .use { resource -> subject.uploadImage(resource = resource) }
                 }
             }
         }
