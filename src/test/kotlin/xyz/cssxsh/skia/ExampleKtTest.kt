@@ -117,14 +117,13 @@ internal class ExampleKtTest {
 
     @Test
     fun zzkia() {
-        FontUtils.loadTypeface("./run/zzkia.ttf")
         System.setProperty(ZZKIA_ORIGIN, "./example/zzkia.jpg")
         val surface = zzkia("有内鬼，停止交易")
 
         val image = surface.makeImageSnapshot()
         val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
 
-        val file = File("./run/pinyin.png")
+        val file = File("./run/zzkia.png")
         file.writeBytes(data.bytes)
     }
 }
