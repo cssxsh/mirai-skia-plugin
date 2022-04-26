@@ -1,6 +1,7 @@
 package xyz.cssxsh.skia
 
 import org.jetbrains.skia.*
+import org.jetbrains.skia.paragraph.*
 import xyz.cssxsh.gif.*
 import xyz.cssxsh.skia.gif.*
 import java.io.*
@@ -325,4 +326,57 @@ public fun dear(face: Image): File {
     }
 
     return temp
+}
+
+internal const val ZZKIA_ORIGIN = "xyz.cssxsh.skia.zzkia"
+
+/**
+ * [zzkia](https://github.com/dcalsky/zzkia)
+ */
+public fun zzkia(text: String): Surface {
+    val origin = try {
+        Image.makeFromEncoded(File(System.getProperty(ZZKIA_ORIGIN, "pinyin.jpg")).readBytes())
+    } catch (cause: Throwable) {
+        throw IllegalStateException(
+            "please download https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg , file path set property $ZZKIA_ORIGIN",
+            cause
+        )
+    }
+    val surface = Surface.makeRaster(origin.imageInfo)
+    surface.writePixels(Bitmap.makeFromImage(origin), 0,0)
+
+    surface.canvas.rotate(9.8F)
+
+    val fonts = FontCollection()
+        .setDynamicFontManager(FontUtils.provider)
+        .setDefaultFontManager(FontMgr.default)
+
+    // context
+    val context = ParagraphStyle().apply {
+        textStyle = TextStyle()
+            .setFontSize(70F)
+            .setColor(Color.BLACK)
+            .setFontFamilies(arrayOf("FZXS14"))
+    }
+    ParagraphBuilder(context, fonts)
+        .addText(text)
+        .build()
+        .layout(680F)
+        .paint(surface.canvas, 330F, 270F)
+
+    // count
+    val count = ParagraphStyle().apply {
+        alignment = Alignment.RIGHT
+        textStyle = TextStyle()
+            .setFontSize(70F)
+            .setColor(Color.makeARGB(255, 129, 212, 250))
+            .setFontFamilies(arrayOf("FZXS14"))
+    }
+    ParagraphBuilder(count, fonts)
+        .addText("${text.length}/900")
+        .build()
+        .layout(680F)
+        .paint(surface.canvas, 360F, 170F)
+
+    return surface
 }

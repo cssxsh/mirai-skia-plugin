@@ -9,9 +9,9 @@ import java.nio.*
 
 internal class ExampleKtTest {
     init {
-        val run = File("./run")
-        run.mkdirs()
-        for (file in run.resolve("fonts").listFiles().orEmpty()) {
+        val fonts = File("./run/fonts")
+        fonts.mkdirs()
+        for (file in fonts.listFiles().orEmpty()) {
             when (file.extension) {
                 "ttf", "otf", "eot", "fon", "font", "woff", "woff2" -> {
                     try {
@@ -23,7 +23,7 @@ internal class ExampleKtTest {
                 "ttc" -> {
                     try {
                         val count = file.inputStream().use { input ->
-                            input.readNBytes(8)
+                            input.skip(8)
                             ByteBuffer.wrap(input.readNBytes(4)).int
                         }
                         for (index in 0 until count) {
@@ -112,6 +112,19 @@ internal class ExampleKtTest {
         val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
 
         val file = File("./run/choyen.png")
+        file.writeBytes(data.bytes)
+    }
+
+    @Test
+    fun zzkia() {
+        FontUtils.loadTypeface("./run/zzkia.ttf")
+        System.setProperty(ZZKIA_ORIGIN, "./example/zzkia.jpg")
+        val surface = zzkia("有内鬼，停止交易")
+
+        val image = surface.makeImageSnapshot()
+        val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
+
+        val file = File("./run/pinyin.png")
         file.writeBytes(data.bytes)
     }
 }
