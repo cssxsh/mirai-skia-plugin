@@ -357,11 +357,13 @@ public fun zzkia(text: String): Surface {
             .setFontSize(70F)
             .setColor(Color.BLACK)
             .setFontFamilies(arrayOf("FZXS14"))
+
+        maxLinesCount = 7
     }
     ParagraphBuilder(context, fonts)
         .addText(text)
         .build()
-        .layout(680F)
+        .layout(700F)
         .paint(surface.canvas, 330F, 270F)
 
     // count
