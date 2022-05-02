@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.0.4-M1"
+version = "1.0.4-M2"
 
 repositories {
     mavenLocal()
@@ -49,8 +49,6 @@ kotlin {
 tasks {
     test {
         useJUnitPlatform()
-
-        systemProperty("java.library.path", workingDir.resolve("jni").absolutePath)
     }
 }
 

@@ -27,15 +27,9 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         launch {
             loadTypeface(folder = dataFolder.resolve("fonts"))
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
-
-            try {
-                xyz.cssxsh.gif.Library.staticLoad()
-            } catch (cause: Throwable) {
-                logger.warning { cause.message }
-            }
         }
 
-        val test = System.getProperty("xyz.cssxsh.skia.test", "false").toBoolean()
+        val test = System.getProperty("xyz.cssxsh.skia.test").toBoolean()
         if (test) {
             launch {
                 loadFace(folder = dataFolder.resolve("face"))
