@@ -335,7 +335,7 @@ internal const val ZZKIA_ORIGIN = "xyz.cssxsh.skia.zzkia"
  */
 public fun zzkia(text: String): Surface {
     val origin = try {
-        Image.makeFromEncoded(File(System.getProperty(ZZKIA_ORIGIN, "pinyin.jpg")).readBytes())
+        Image.makeFromEncoded(File(System.getProperty(ZZKIA_ORIGIN, "zzkia.jpg")).readBytes())
     } catch (cause: Throwable) {
         throw IllegalStateException(
             "please download https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg , file path set property $ZZKIA_ORIGIN",
@@ -350,13 +350,14 @@ public fun zzkia(text: String): Surface {
     val fonts = FontCollection()
         .setDynamicFontManager(FontUtils.provider)
         .setDefaultFontManager(FontMgr.default)
+    val families = arrayOf("FZXS14")
 
     // context
     val context = ParagraphStyle().apply {
         textStyle = TextStyle()
             .setFontSize(70F)
             .setColor(Color.BLACK)
-            .setFontFamilies(arrayOf("FZXS14"))
+            .setFontFamilies(families)
 
         maxLinesCount = 7
     }
@@ -372,7 +373,7 @@ public fun zzkia(text: String): Surface {
         textStyle = TextStyle()
             .setFontSize(70F)
             .setColor(Color.makeARGB(255, 129, 212, 250))
-            .setFontFamilies(arrayOf("FZXS14"))
+            .setFontFamilies(families)
     }
     ParagraphBuilder(count, fonts)
         .addText("${text.length}/900")
