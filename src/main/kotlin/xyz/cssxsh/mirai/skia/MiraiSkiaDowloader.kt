@@ -1,4 +1,4 @@
-package xyz.cssxsh.mirai.plugin
+package xyz.cssxsh.mirai.skia
 
 import io.ktor.client.*
 import io.ktor.client.call.*

@@ -1,4 +1,4 @@
-package xyz.cssxsh.mirai
+package xyz.cssxsh.mirai.skia
 
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skia.*

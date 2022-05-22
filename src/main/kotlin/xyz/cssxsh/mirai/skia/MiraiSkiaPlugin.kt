@@ -1,4 +1,4 @@
-package xyz.cssxsh.mirai.plugin
+package xyz.cssxsh.mirai.skia
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.plugin.jvm.*
@@ -9,7 +9,6 @@ import net.mamoe.mirai.utils.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.jetbrains.skiko.*
 import org.jetbrains.skia.Image as SkiaImage
-import xyz.cssxsh.mirai.*
 import xyz.cssxsh.skia.*
 
 public object MiraiSkiaPlugin : KotlinPlugin(

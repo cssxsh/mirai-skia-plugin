@@ -1,4 +1,4 @@
-package xyz.cssxsh.mirai
+package xyz.cssxsh.mirai.skia
 
 import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
