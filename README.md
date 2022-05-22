@@ -9,12 +9,24 @@ Be based on <https://github.com/JetBrains/skiko>
 
 ## SkiaToMirai
 
-[SkiaToMirai](src/main/kotlin/xyz/cssxsh/mirai/SkiaToMirai.kt)  
-[SkiaExternalResource](src/main/kotlin/xyz/cssxsh/mirai/SkiaExternalResource.kt)  
+[SkiaToMirai](src/main/kotlin/xyz/cssxsh/mirai/skia/SkiaToMirai.kt)  
+[SkiaExternalResource](src/main/kotlin/xyz/cssxsh/mirai/skia/SkiaExternalResource.kt)  
 
 ## Example
 
 [Example](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+
+## Dependency
+
+```
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly("xyz.cssxsh.mirai:mirai-skia-plugin:${version}")
+}
+```
 
 ## GIF
 
