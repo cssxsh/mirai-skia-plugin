@@ -273,6 +273,7 @@ internal const val DEAR_ORIGIN = "xyz.cssxsh.skia.dear"
 
 /**
  * 构造 亲亲 表情
+ * @see DEAR_ORIGIN
  * @return 临时文件
  */
 public fun dear(face: Image): File {
@@ -332,6 +333,7 @@ internal const val ZZKIA_ORIGIN = "xyz.cssxsh.skia.zzkia"
 
 /**
  * [zzkia](https://github.com/dcalsky/zzkia)
+ * @see ZZKIA_ORIGIN
  */
 public fun zzkia(text: String): Surface {
     val origin = try {
