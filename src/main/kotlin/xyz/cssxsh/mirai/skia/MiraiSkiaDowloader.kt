@@ -58,7 +58,7 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
 
 internal suspend fun avatar(id: Long, size: Int, folder: File): File = supervisorScope {
     http.get<HttpStatement>("https://q.qlogo.cn/g?b=qq&nk=${id}&s=${size}").execute { response ->
-        val target = folder.resolve("${id}.${response.contentType()?.contentSubtype}")
+        val target = folder.resolve("${id}.${size}.${response.contentType()?.contentSubtype}")
 
         if (target.exists().not() || target.lastModified() < (response.lastModified()?.time ?: 0)) {
             target.outputStream().use { output ->
@@ -159,11 +159,23 @@ public fun loadTypeface(folder: File) {
 @JvmSynthetic
 public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
     folder.mkdirs()
-    val sprite = download(urlString = "https://benisland.neocities.org/petpet/img/sprite.png", folder)
+    val sprite = try {
+        download(urlString = "https://benisland.neocities.org/petpet/img/sprite.png", folder)
+    } catch (_: Throwable) {
+        folder.resolve("sprite.png")
+    }
     System.setProperty(PET_PET_SPRITE, sprite.absolutePath)
-    val dear = download(urlString = "https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif", folder)
+    val dear = try {
+        download(urlString = "https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif", folder)
+    } catch (_: Throwable) {
+        folder.resolve("003MWcpMly8gv4s019bzsg606o06o40902.gif")
+    }
     System.setProperty(DEAR_ORIGIN, dear.absolutePath)
-    val zzkia = download(urlString = "https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg", folder)
+    val zzkia = try {
+        download(urlString = "https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg", folder)
+    } catch (_: Throwable) {
+        folder.resolve("4.jpg")
+    }
     System.setProperty(ZZKIA_ORIGIN, zzkia.absolutePath)
 }
 
