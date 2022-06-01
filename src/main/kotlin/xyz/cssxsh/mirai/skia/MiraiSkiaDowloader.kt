@@ -10,9 +10,12 @@ import io.ktor.http.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.*
 import net.mamoe.mirai.utils.*
+import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
 import java.io.*
+import java.util.jar.*
 import java.util.zip.*
 
 internal val logger get() = MiraiSkiaPlugin.logger
@@ -23,6 +26,10 @@ private val http = HttpClient(OkHttp) {
         connectTimeoutMillis = 30_000
         socketTimeoutMillis = 30_000
     }
+}
+
+internal val sevenZA: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skia.seven7a", "7z")
 }
 
 internal suspend fun download(urlString: String, folder: File): File = supervisorScope {
@@ -67,33 +74,6 @@ internal suspend fun avatar(id: Long, size: Int, folder: File): File = superviso
     }
 }
 
-internal fun sevenZA(folder: File): File {
-    val os = System.getProperty("os.name").lowercase()
-    val arch = System.getProperty("os.arch")
-    val relative = when {
-        os.contains(other = "linux") && arch.contains(other = "aarch64") -> "7zz-linux-arm64"
-        os.contains(other = "linux") && arch.contains(other = "aarch") -> "7zz-linux-arm"
-        os.contains(other = "linux") && arch.contains(other = "64") -> "7zz-linux-x64"
-        os.contains(other = "linux") && arch.contains(other = "86") -> "7zz-linux-x86"
-        os.contains(other = "windows") && arch.contains(other = "64") -> "7za-x64.exe"
-        os.contains(other = "windows") && arch.contains(other = "86") -> "7za-x86.exe"
-        os.contains(other = "mac") -> "7zz-mac"
-        os.contains(other = "darwin") -> "7zz-mac"
-        else -> throw RuntimeException("Unsupported platform: $os $arch")
-    }
-    val binary = folder.resolve(relative).apply {
-        if (exists().not()) {
-            outputStream().use { output ->
-                MiraiSkiaPlugin.getResourceAsStream("xyz/cssxsh/mirai/plugin/$relative")!!
-                    .use { input -> input.transferTo(output) }
-            }
-        }
-        setExecutable(true)
-    }
-
-    return binary
-}
-
 /**
  * 加载字体
  * @param folder 字体文件文件夹
@@ -116,7 +96,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
     for (pack in downloaded) {
         when (pack.extension) {
             "7z" -> {
-                ProcessBuilder(sevenZA(folder = download).absolutePath, "x", pack.absolutePath, "-y")
+                ProcessBuilder(sevenZA, "x", pack.absolutePath, "-y")
                     .directory(folder)
                     .start()
                     // 防止卡顿
@@ -185,4 +165,61 @@ public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
     System.setProperty(DEAR_ORIGIN, dear.absolutePath)
     val zzkia = download(urlString = "https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg", folder)
     System.setProperty(ZZKIA_ORIGIN, zzkia.absolutePath)
+}
+
+private const val SKIKO_MAVEN = "https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/skiko"
+
+private const val ICU = "icudtl.dat"
+
+public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.IO) {
+    @Suppress("INVISIBLE_MEMBER")
+    System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
+    System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
+    val skiko = System.mapLibraryName("skiko-$hostId")
+    val gif = System.mapLibraryName("gif-$hostId")
+
+    folder.mkdirs()
+
+    val pack = when {
+        "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
+        else -> "skiko-awt-runtime-${hostId}"
+    }
+    val maven = "$SKIKO_MAVEN/$pack/${Version.skiko}/$pack-${Version.skiko}.jar"
+
+    folder.resolve(skiko).apply {
+        if (exists().not()) {
+            val jar = JarFile(download(urlString = maven, folder = folder))
+
+            outputStream().use { output ->
+                jar.getInputStream(jar.getJarEntry(skiko)).transferTo(output)
+            }
+
+            if (hostOs == OS.Windows) {
+                folder.resolve(ICU).apply {
+                    outputStream().use { output ->
+                        jar.getInputStream(jar.getJarEntry(ICU)).transferTo(output)
+                    }
+                }
+            }
+
+            jar.close()
+        }
+    }
+    Library.load()
+
+    folder.resolve(gif).apply {
+        if (exists().not()) {
+            parentFile.mkdirs()
+
+            val latest = http.get<String>("https://api.github.com/repos/cssxsh/gif-jni/releases/latest")
+            val release = Json.decodeFromString(JsonObject.serializer(), latest)
+            val asset = release.getValue("assets").jsonArray
+                .find { gif in it.jsonObject.getValue("name").jsonPrimitive.content }
+                ?: throw NoSuchElementException("gif lib $gif")
+            val lib = asset.jsonObject.getValue("browser_download_url").jsonPrimitive.content
+
+            download(urlString = lib, folder = folder)
+        }
+    }
+    xyz.cssxsh.gif.Library.load()
 }

@@ -1,6 +1,7 @@
 package xyz.cssxsh.mirai.skia
 
 import kotlinx.coroutines.*
+import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.*
@@ -21,10 +22,27 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     }
 ) {
 
+    override fun PluginComponentStorage.onLoad() {
+        // Termux
+        if (hostOs == OS.Linux && "termux" in System.getProperty("user.dir")) {
+            logger.info { "change platform: $hostId to Android" }
+            try {
+                val kt = Class.forName("org.jetbrains.skiko.OsArch_jvmKt")
+                val delegate = kt.getDeclaredField("hostId\$delegate").apply { isAccessible = true }
+                val lazy = delegate.get(null)
+                val value = lazy::class.java.getDeclaredField("_value").apply { isAccessible = true }
+                value.set(lazy, "android-arm64")
+            } catch (_: Throwable) {
+                logger.warning { "修改 hostId 失败" }
+            }
+        }
+    }
+
     override fun onEnable() {
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
         launch {
-            loadTypeface(folder = dataFolder.resolve("fonts"))
+            loadJNILibrary(folder = resolveDataFile("lib"))
+            loadTypeface(folder = resolveDataFile("fonts"))
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
         }
 
