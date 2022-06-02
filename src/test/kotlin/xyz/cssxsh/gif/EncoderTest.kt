@@ -1,11 +1,20 @@
 package xyz.cssxsh.gif
 
+import kotlinx.coroutines.*
 import org.jetbrains.skia.*
 import org.junit.jupiter.api.Test
+import xyz.cssxsh.mirai.skia.*
 import xyz.cssxsh.skia.*
 import java.io.File
 
 internal class EncoderTest {
+    init {
+        System.setProperty("xyz.cssxsh.mirai.skia.logger", "false")
+        runBlocking {
+            loadJNILibrary(folder = File("./run"))
+        }
+    }
+
     @Test
     fun build() {
         val face = Image.makeFromEncoded(File("./example/face.png").readBytes())
