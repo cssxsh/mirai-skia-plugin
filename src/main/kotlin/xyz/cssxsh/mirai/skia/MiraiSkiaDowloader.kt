@@ -18,7 +18,10 @@ import java.io.*
 import java.util.jar.*
 import java.util.zip.*
 
-internal val logger get() = MiraiSkiaPlugin.logger
+internal val logger by lazy {
+    val open = System.getProperty("xyz.cssxsh.mirai.skia.logger", "true").toBoolean()
+    if (open) MiraiSkiaPlugin.logger else SilentLogger
+}
 
 private val http = HttpClient(OkHttp) {
     CurlUserAgent()

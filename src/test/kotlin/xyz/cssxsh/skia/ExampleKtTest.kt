@@ -11,6 +11,7 @@ import java.nio.*
 
 internal class ExampleKtTest {
     init {
+        System.setProperty("xyz.cssxsh.mirai.skia.logger", "false")
         runBlocking {
             loadJNILibrary(folder = File("./run"))
         }
