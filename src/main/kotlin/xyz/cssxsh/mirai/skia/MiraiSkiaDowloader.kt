@@ -200,7 +200,8 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
 
     folder.resolve(skiko).apply {
         if (exists().not()) {
-            val jar = JarFile(download(urlString = maven, folder = folder))
+            val file = download(urlString = maven, folder = folder)
+            val jar = JarFile(file)
 
             outputStream().use { output ->
                 jar.getInputStream(jar.getJarEntry(skiko)).transferTo(output)
@@ -215,6 +216,7 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
             }
 
             jar.close()
+            file.deleteOnExit()
         }
     }
     Library.load()
