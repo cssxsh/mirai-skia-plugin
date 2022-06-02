@@ -29,7 +29,7 @@ public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
     return surface
 }
 
-internal const val PET_PET_SPRITE = "xyz.cssxsh.skia.petpet"
+public const val PET_PET_SPRITE: String = "xyz.cssxsh.skia.petpet"
 
 /**
  * 构造 PetPet Face
@@ -269,7 +269,7 @@ public fun choyen(top: String, bottom: String): Surface {
     return surface
 }
 
-internal const val DEAR_ORIGIN = "xyz.cssxsh.skia.dear"
+public const val DEAR_ORIGIN: String = "xyz.cssxsh.skia.dear"
 
 /**
  * 构造 亲亲 表情
@@ -329,7 +329,7 @@ public fun dear(face: Image): File {
     return temp
 }
 
-internal const val ZZKIA_ORIGIN = "xyz.cssxsh.skia.zzkia"
+public const val ZZKIA_ORIGIN: String = "xyz.cssxsh.skia.zzkia"
 
 /**
  * [zzkia](https://github.com/dcalsky/zzkia)

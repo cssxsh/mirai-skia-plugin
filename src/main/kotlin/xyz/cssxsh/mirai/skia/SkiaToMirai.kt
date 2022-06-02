@@ -27,3 +27,13 @@ public fun Surface.makeSnapshotResource(format: EncodedImageFormat = EncodedImag
 public fun File.makeImageResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkiaExternalResource {
     return SkiaExternalResource(image = Image.makeFromEncoded(readBytes()), format = format)
 }
+
+/**
+ * 从 [Data] 获取图片资源
+ *
+ * @see ExternalResource
+ */
+@JvmOverloads
+public fun Data.toImageResource(formatName: String = ExternalResource.DEFAULT_FORMAT_NAME): SkiaExternalResource {
+    return SkiaExternalResource(origin = this, formatName = formatName)
+}

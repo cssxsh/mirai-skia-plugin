@@ -56,24 +56,6 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
     }
 }
 
-internal suspend fun avatar(id: Long, size: Int, folder: File): File = supervisorScope {
-    http.get<HttpStatement>("https://q.qlogo.cn/g?b=qq&nk=${id}&s=${size}").execute { response ->
-        val target = folder.resolve("${id}.${size}.${response.contentType()?.contentSubtype}")
-
-        if (target.exists().not() || target.lastModified() < (response.lastModified()?.time ?: 0)) {
-            target.outputStream().use { output ->
-                val channel: ByteReadChannel = response.receive()
-
-                while (!channel.isClosedForRead) channel.copyTo(output)
-            }
-        } else {
-            response.call.cancel("文件 ${target.name} 已存在，跳过下载")
-        }
-
-        target
-    }
-}
-
 /**
  * 加载字体
  * @param folder 字体文件文件夹
@@ -151,32 +133,6 @@ public fun loadTypeface(folder: File) {
             logger.warning({ "加载字体文件失败 ${file.path}" }, cause)
         }
     }
-}
-
-/**
- * 下载表情模板
- */
-@JvmSynthetic
-public suspend fun loadFace(folder: File): Unit = withContext(Dispatchers.IO) {
-    folder.mkdirs()
-    val sprite = try {
-        download(urlString = "https://benisland.neocities.org/petpet/img/sprite.png", folder)
-    } catch (_: Throwable) {
-        folder.resolve("sprite.png")
-    }
-    System.setProperty(PET_PET_SPRITE, sprite.absolutePath)
-    val dear = try {
-        download(urlString = "https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif", folder)
-    } catch (_: Throwable) {
-        folder.resolve("003MWcpMly8gv4s019bzsg606o06o40902.gif")
-    }
-    System.setProperty(DEAR_ORIGIN, dear.absolutePath)
-    val zzkia = try {
-        download(urlString = "https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg", folder)
-    } catch (_: Throwable) {
-        folder.resolve("4.jpg")
-    }
-    System.setProperty(ZZKIA_ORIGIN, zzkia.absolutePath)
 }
 
 private const val SKIKO_MAVEN = "https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/skiko"
