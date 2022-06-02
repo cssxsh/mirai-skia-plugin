@@ -31,8 +31,8 @@ private val http = HttpClient(OkHttp) {
     }
 }
 
-internal val sevenZA: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.skia.seven7a", "7z")
+internal val sevenZ: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skia.sevenZ", "7zz")
 }
 
 internal suspend fun download(urlString: String, folder: File): File = supervisorScope {
@@ -81,7 +81,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
     for (pack in downloaded) {
         when (pack.extension) {
             "7z" -> {
-                ProcessBuilder(sevenZA, "x", pack.absolutePath, "-y")
+                ProcessBuilder(sevenZ, "x", pack.absolutePath, "-y")
                     .directory(folder)
                     .start()
                     // 防止卡顿
