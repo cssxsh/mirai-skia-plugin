@@ -1,14 +1,19 @@
 package xyz.cssxsh.skia
 
+import kotlinx.coroutines.*
 import org.jetbrains.skia.*
 import org.jetbrains.skia.svg.*
 import org.jetbrains.skiko.*
 import org.junit.jupiter.api.*
+import xyz.cssxsh.mirai.skia.*
 import java.io.*
 import java.nio.*
 
 internal class ExampleKtTest {
     init {
+        runBlocking {
+            loadJNILibrary(folder = File("./run"))
+        }
         val fonts = File("./run/fonts")
         fonts.mkdirs()
         for (file in fonts.listFiles().orEmpty()) {

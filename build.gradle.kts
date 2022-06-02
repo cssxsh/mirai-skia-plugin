@@ -35,13 +35,6 @@ dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     //
     testImplementation(kotlin("test", "1.6.21"))
-    testRuntimeOnly("org.jetbrains.skiko:skiko-awt-runtime-linux-arm64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-awt-runtime-linux-x64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-awt-runtime-macos-arm64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-awt-runtime-macos-x64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-android-runtime-arm64:0.7.20")
-    testRuntimeOnly("org.jetbrains.skiko:skiko-android-runtime-x64:0.7.20")
 }
 
 kotlin {
