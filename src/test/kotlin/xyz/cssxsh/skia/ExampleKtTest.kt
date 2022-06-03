@@ -1,7 +1,7 @@
 package xyz.cssxsh.skia
 
 import kotlinx.coroutines.*
-import net.mamoe.mirai.console.util.SemVersion
+import net.mamoe.mirai.console.util.*
 import org.jetbrains.skia.*
 import org.jetbrains.skia.svg.*
 import org.jetbrains.skiko.*
