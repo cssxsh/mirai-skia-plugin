@@ -11,6 +11,7 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
+import net.mamoe.mirai.console.util.SemVersion
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
@@ -142,7 +143,7 @@ private const val SKIKO_MAVEN = "https://maven.pkg.jetbrains.space/public/p/comp
 
 private const val ICU = "icudtl.dat"
 
-public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.IO) {
+public suspend fun loadJNILibrary(folder: File, version: SemVersion): Unit = withContext(Dispatchers.IO) {
     @Suppress("INVISIBLE_MEMBER")
     System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
     System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
@@ -150,6 +151,13 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
     val gif = System.mapLibraryName("gif-$hostId")
 
     folder.mkdirs()
+
+    val history = folder.resolve("version.txt")
+    if (history.exists().not() || SemVersion.invoke(history.readText()) != version) {
+        history.writeText(version.toString())
+        folder.resolve(skiko).delete()
+        folder.resolve(gif).delete()
+    }
 
     val pack = when {
         "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
