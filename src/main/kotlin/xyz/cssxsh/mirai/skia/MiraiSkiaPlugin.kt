@@ -3,7 +3,6 @@ package xyz.cssxsh.mirai.skia
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.jvm.*
-import net.mamoe.mirai.console.plugin.version
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
@@ -37,7 +36,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     override fun onEnable() {
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
         launch {
-            loadJNILibrary(folder = resolveDataFile("lib"), version = version)
+            loadJNILibrary(folder = resolveDataFile("lib"))
             loadTypeface(folder = resolveDataFile("fonts"))
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
         }
