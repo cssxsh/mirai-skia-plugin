@@ -1,7 +1,6 @@
 package xyz.cssxsh.gif
 
 import kotlinx.coroutines.*
-import net.mamoe.mirai.console.util.*
 import org.jetbrains.skia.*
 import org.junit.jupiter.api.Test
 import xyz.cssxsh.mirai.skia.*
@@ -12,7 +11,7 @@ internal class EncoderTest {
     init {
         System.setProperty("xyz.cssxsh.mirai.skia.logger", "false")
         runBlocking {
-            loadJNILibrary(folder = File("./run"), version = SemVersion.invoke("1.0.0"))
+            loadJNILibrary(folder = File("./run"))
         }
     }
 

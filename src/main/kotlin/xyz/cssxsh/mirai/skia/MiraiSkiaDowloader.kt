@@ -143,7 +143,7 @@ private const val SKIKO_MAVEN = "https://maven.pkg.jetbrains.space/public/p/comp
 
 private const val ICU = "icudtl.dat"
 
-public suspend fun loadJNILibrary(folder: File, version: SemVersion): Unit = withContext(Dispatchers.IO) {
+public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.IO) {
     @Suppress("INVISIBLE_MEMBER")
     System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
     System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
@@ -153,8 +153,8 @@ public suspend fun loadJNILibrary(folder: File, version: SemVersion): Unit = wit
     folder.mkdirs()
 
     val history = folder.resolve("version.txt")
-    if (history.exists().not() || SemVersion.invoke(history.readText()) != version) {
-        history.writeText(version.toString())
+    if (history.exists().not() || SemVersion.invoke(history.readText()) != SemVersion.invoke(Version.skiko)) {
+        history.writeText(Version.skiko)
         folder.resolve(skiko).delete()
         folder.resolve(gif).delete()
     }

@@ -1,7 +1,6 @@
 package xyz.cssxsh.skia
 
 import kotlinx.coroutines.*
-import net.mamoe.mirai.console.util.*
 import org.jetbrains.skia.*
 import org.jetbrains.skia.svg.*
 import org.jetbrains.skiko.*
@@ -14,7 +13,7 @@ internal class ExampleKtTest {
     init {
         System.setProperty("xyz.cssxsh.mirai.skia.logger", "false")
         runBlocking {
-            loadJNILibrary(folder = File("./run"), version = SemVersion.invoke("1.0.0"))
+            loadJNILibrary(folder = File("./run"))
         }
         val fonts = File("./run/fonts")
         fonts.mkdirs()
