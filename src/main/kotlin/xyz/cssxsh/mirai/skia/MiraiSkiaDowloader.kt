@@ -139,7 +139,21 @@ public fun loadTypeface(folder: File) {
     }
 }
 
-private const val SKIKO_MAVEN = "https://maven.pkg.jetbrains.space/public/p/compose/dev/org/jetbrains/skiko"
+private val SKIKO_MAVEN: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skia.maven", "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+}
+
+private val SKIKO_PACKAGE: String by lazy {
+    val name = when {
+        "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
+        else -> "skiko-awt-runtime-${hostId}"
+    }
+    System.getProperty("xyz.cssxsh.mirai.skia.package", name)
+}
+
+private val SKIKO_VERSION: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skia.version", Version.skiko)
+}
 
 private const val ICU = "icudtl.dat"
 
@@ -153,17 +167,13 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
     folder.mkdirs()
 
     val history = folder.resolve("version.txt")
-    if (history.exists().not() || SemVersion.invoke(history.readText()) != SemVersion.invoke(Version.skiko)) {
-        history.writeText(Version.skiko)
+    if (history.exists().not() || SemVersion.invoke(history.readText()) != SemVersion.invoke(SKIKO_VERSION)) {
+        history.writeText(SKIKO_VERSION)
         folder.resolve(skiko).delete()
         folder.resolve(gif).delete()
     }
 
-    val pack = when {
-        "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
-        else -> "skiko-awt-runtime-${hostId}"
-    }
-    val maven = "$SKIKO_MAVEN/$pack/${Version.skiko}/$pack-${Version.skiko}.jar"
+    val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
 
     folder.resolve(skiko).apply {
         if (exists().not()) {
