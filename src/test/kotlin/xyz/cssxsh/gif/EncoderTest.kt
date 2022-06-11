@@ -10,7 +10,7 @@ import java.io.File
 internal class EncoderTest {
     init {
         runBlocking {
-            System.getProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni/releases/download")
+            System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni/releases/download")
             loadJNILibrary(folder = File("./run/lib"))
         }
     }
