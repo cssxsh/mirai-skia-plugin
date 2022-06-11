@@ -18,7 +18,9 @@ Be based on <https://github.com/JetBrains/skiko>
 
 ## Dependency
 
-```
+作为 Mirai Console 前置插件： 
+配置文件 `build.gradle.kts`
+```kotlin
 repositories {
     mavenCentral()
 }
@@ -27,10 +29,65 @@ dependencies {
     compileOnly("xyz.cssxsh.mirai:mirai-skia-plugin:${version}")
 }
 ```
+定义 `dependsOn`
+```kotlin
+object MemeHelperPlugin : KotlinPlugin(
+    JvmPluginDescription(
+        id = "xyz.cssxsh.mirai.plugin.meme-helper",
+        name = "meme-helper",
+        version = "1.0.2",
+    ) {
+        author("cssxsh")
+        dependsOn("xyz.cssxsh.mirai.plugin.mirai-skia-plugin", ">= 1.1.0", false)
+    }
+)
+```
+
+作为 Mirai Core Jvm 引用:  
+配置文件 `build.gradle.kts`
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("xyz.cssxsh.mirai:mirai-skia-plugin:${version}")
+}
+```
+手动调用库加载函数
+```kotlin
+import xyz.cssxsh.mirai.skia.*
+
+checkPlatform()
+loadJNILibrary()
+```
 
 ## GIF
 
 由于 Skiko 没有携带 GIF 编码器，
 这里提供两个实现
-* [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) 
-* [rust](src/main/kotlin/xyz/cssxsh/gif) (Base on [JNI](https://github.com/cssxsh/gif-jni))
+* [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) - [petpet](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+* [rust](src/main/kotlin/xyz/cssxsh/gif) (Base on [JNI](https://github.com/cssxsh/gif-jni)) - [dear](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+
+## 安装
+
+### MCL 指令安装
+
+`./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel stable --type plugin`
+
+### 手动安装
+
+1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成`plugins`文件夹
+2. 从 [Releases](https://github.com/cssxsh/mirai-skia-plugin/releases) 下载`jar`并将其放入`plugins`文件夹中
+
+## 兼容性
+
+|        OS/Arch         |  Skia  |   Gif   |
+|:----------------------:|:------:|:-------:|
+|     Windows-10-X64     | 0.7.20 |  2.0.0  |
+|     Windows-7-X64      | 0.7.12 | unknown |
+|       Linux-X64        | 0.7.20 |  2.0.0  |
+|      Linux-Arm64       | 0.7.20 |  2.0.0  |
+|       MacOS-X64        | 0.7.20 |  2.0.0  |
+|      MacOS-Arm64       | 0.7.20 |  2.0.0  |
+| Termux (Android-Arm64) | 0.7.18 |  2.0.0  |

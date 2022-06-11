@@ -25,7 +25,7 @@ public fun Surface.makeSnapshotResource(format: EncodedImageFormat = EncodedImag
  */
 @JvmOverloads
 public fun File.makeImageResource(format: EncodedImageFormat = EncodedImageFormat.PNG): SkiaExternalResource {
-    return SkiaExternalResource(image = Image.makeFromEncoded(readBytes()), format = format)
+    return SkiaExternalResource(image = Image.makeFromEncoded(bytes = this.readBytes()), format = format)
 }
 
 /**
