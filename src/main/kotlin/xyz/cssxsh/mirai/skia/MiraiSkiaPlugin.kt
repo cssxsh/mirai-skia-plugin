@@ -33,9 +33,12 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         }
     }
 
+    public lateinit var loadJob: Job
+        private set
+
     override fun onEnable() {
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
-        launch {
+        loadJob = launch {
             loadJNILibrary(folder = resolveDataFile("lib"))
             loadTypeface(folder = resolveDataFile("fonts"))
             logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }

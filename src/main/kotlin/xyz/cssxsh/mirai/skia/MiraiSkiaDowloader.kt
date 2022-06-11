@@ -10,8 +10,6 @@ import io.ktor.http.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
-import kotlinx.serialization.json.*
-import net.mamoe.mirai.console.util.SemVersion
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
@@ -158,6 +156,14 @@ private val SKIKO_VERSION: String by lazy {
     System.getProperty("xyz.cssxsh.mirai.skia.version", Version.skiko)
 }
 
+private val GIF_RELEASE: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.gif.release", "https://download.fastgit.org/cssxsh/gif-jni/releases/download")
+}
+
+private val GIF_VERSION: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.gif.version", xyz.cssxsh.gif.Version.gif)
+}
+
 private const val ICU = "icudtl.dat"
 
 public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.IO) {
@@ -169,17 +175,13 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
 
     folder.mkdirs()
 
-    val history = folder.resolve("version.txt")
-    if (history.exists().not() || SemVersion.invoke(history.readText()) != SemVersion.invoke(SKIKO_VERSION)) {
-        history.writeText(SKIKO_VERSION)
-        folder.resolve(skiko).delete()
-        folder.resolve(gif).delete()
-    }
+    with(folder.resolve(skiko)) {
+        val version = folder.resolve("skia.version.txt")
+        if (version.exists().not() || version.readText() != SKIKO_VERSION) delete()
 
-    val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
-
-    folder.resolve(skiko).apply {
         if (exists().not()) {
+            val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
+            logger.debug { maven }
             val file = download(urlString = maven, folder = folder)
             val jar = JarFile(file)
 
@@ -188,32 +190,29 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
             }
 
             if (hostOs == OS.Windows) {
-                folder.resolve(ICU).apply {
-                    outputStream().use { output ->
-                        jar.getInputStream(jar.getJarEntry(ICU)).transferTo(output)
-                    }
+                folder.resolve(ICU).outputStream().use { output ->
+                    jar.getInputStream(jar.getJarEntry(ICU)).transferTo(output)
                 }
             }
 
             jar.close()
             file.deleteOnExit()
         }
+        version.writeText(SKIKO_VERSION)
     }
     Library.load()
 
-    folder.resolve(gif).apply {
+
+    with(folder.resolve(gif)) {
+        val version = folder.resolve("gif.version.txt")
+        if (version.exists().not() || version.readText() != GIF_VERSION) delete()
+
         if (exists().not()) {
-            parentFile.mkdirs()
-
-            val latest = http.get<String>("https://api.github.com/repos/cssxsh/gif-jni/releases/latest")
-            val release = Json.decodeFromString(JsonObject.serializer(), latest)
-            val asset = release.getValue("assets").jsonArray
-                .find { gif in it.jsonObject.getValue("name").jsonPrimitive.content }
-                ?: throw NoSuchElementException("gif lib $gif")
-            val lib = asset.jsonObject.getValue("browser_download_url").jsonPrimitive.content
-
-            download(urlString = lib, folder = folder)
+            val release = "$GIF_RELEASE/v$GIF_VERSION/$gif"
+            logger.debug { release }
+            download(urlString = release, folder = folder)
         }
+        version.writeText(GIF_VERSION)
     }
     xyz.cssxsh.gif.Library.load()
 }
