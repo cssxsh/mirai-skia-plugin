@@ -20,8 +20,11 @@ import java.util.jar.*
 import java.util.zip.*
 
 internal val logger by lazy {
-    val open = System.getProperty("xyz.cssxsh.mirai.skia.logger", "true").toBoolean()
-    if (open) MiraiSkiaPlugin.logger else SilentLogger
+    try {
+        MiraiSkiaPlugin.logger
+    } catch (_: Throwable) {
+        MiraiLogger.Factory.create(Library::class)
+    }
 }
 
 private val http = HttpClient(OkHttp) {

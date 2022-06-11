@@ -11,9 +11,8 @@ import java.nio.*
 
 internal class ExampleKtTest {
     init {
-        System.setProperty("xyz.cssxsh.mirai.skia.logger", "false")
         runBlocking {
-            loadJNILibrary(folder = File("./run"))
+            loadJNILibrary(folder = File("./run/lib"))
         }
         val fonts = File("./run/fonts")
         fonts.mkdirs()
@@ -87,6 +86,21 @@ internal class ExampleKtTest {
         val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
 
         val file = File("./run/Osu.png")
+        file.writeBytes(data.bytes)
+    }
+
+    @Test
+    fun stats() {
+        val stats = SVGDOM.makeFromFile(xml = File("./example/cssxsh.svg"))
+        val surface = Surface.makeRasterN32Premul(stats.root!!.width.value.toInt(), stats.root!!.height.value.toInt())
+
+        stats.setContainerSize(stats.root!!.width.value, stats.root!!.height.value)
+        stats.render(surface.canvas)
+
+        val image = surface.makeImageSnapshot()
+        val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
+
+        val file = File("./run/cssxsh.png")
         file.writeBytes(data.bytes)
     }
 
