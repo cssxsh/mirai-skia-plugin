@@ -157,7 +157,7 @@ private val SKIKO_VERSION: String by lazy {
 }
 
 private val GIF_RELEASE: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.gif.release", "https://download.fastgit.org/cssxsh/gif-jni/releases/download")
+    System.getProperty("xyz.cssxsh.mirai.gif.release", "https://download.fastgit.org/cssxsh/gif-jni")
 }
 
 private val GIF_VERSION: String by lazy {
@@ -182,10 +182,7 @@ public fun checkPlatform() {
     }
 }
 
-public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.IO) {
-    @Suppress("INVISIBLE_MEMBER")
-    System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
-    System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
+public suspend fun loadJNILibrary(folder: File) {
     val skiko = System.mapLibraryName("skiko-$hostId")
     val gif = System.mapLibraryName("gif-$hostId")
 
@@ -193,11 +190,11 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
 
     with(folder.resolve(skiko)) {
         val version = folder.resolve("skia.version.txt")
+        val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
+        logger.debug { maven }
         if (version.exists().not() || version.readText() != SKIKO_VERSION) delete()
 
         if (exists().not()) {
-            val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
-            logger.debug { maven }
             val file = download(urlString = maven, folder = folder)
             val jar = JarFile(file)
 
@@ -216,19 +213,21 @@ public suspend fun loadJNILibrary(folder: File): Unit = withContext(Dispatchers.
         }
         version.writeText(SKIKO_VERSION)
     }
+    @Suppress("INVISIBLE_MEMBER")
+    System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
     Library.load()
-
 
     with(folder.resolve(gif)) {
         val version = folder.resolve("gif.version.txt")
+        val release = "$GIF_RELEASE/releases/download/v$GIF_VERSION/$gif"
+        logger.debug { release }
         if (version.exists().not() || version.readText() != GIF_VERSION) delete()
 
         if (exists().not()) {
-            val release = "$GIF_RELEASE/v$GIF_VERSION/$gif"
-            logger.debug { release }
             download(urlString = release, folder = folder)
         }
         version.writeText(GIF_VERSION)
     }
+    System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
     xyz.cssxsh.gif.Library.load()
 }
