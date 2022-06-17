@@ -66,7 +66,7 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
  * @param folder 字体文件文件夹
  */
 @JvmSynthetic
-public suspend fun loadTypeface(folder: File, vararg links: String): Unit = withContext(Dispatchers.IO) {
+public suspend fun loadTypeface(folder: File, vararg links: String) {
     val downloaded: MutableList<File> = ArrayList()
     val download = folder.resolve("download")
 
@@ -82,7 +82,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
 
     for (pack in downloaded) {
         when (pack.extension) {
-            "7z" -> {
+            "7z" -> runInterruptible(Dispatchers.IO) {
                 ProcessBuilder(sevenZ, "x", pack.absolutePath, "-y")
                     .directory(folder)
                     .start()
@@ -90,7 +90,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
                     .apply { inputStream.transferTo(OutputStream.nullOutputStream()) }
                     .waitFor()
             }
-            "zip" -> {
+            "zip" -> runInterruptible(Dispatchers.IO) {
                 ZipFile(pack).use { zip ->
                     for (entry in zip.entries()) {
                         with(folder.resolve(entry.name)) {
@@ -106,7 +106,7 @@ public suspend fun loadTypeface(folder: File, vararg links: String): Unit = with
                     }
                 }
             }
-            else -> Unit
+            else -> {}
         }
     }
 
