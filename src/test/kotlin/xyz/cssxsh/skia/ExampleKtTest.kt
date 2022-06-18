@@ -12,7 +12,7 @@ import java.nio.*
 internal class ExampleKtTest {
     init {
         runBlocking {
-            System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni/releases/download")
+            System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
         }
         val fonts = File("./run/fonts")
