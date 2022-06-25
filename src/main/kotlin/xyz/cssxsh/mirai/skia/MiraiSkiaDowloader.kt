@@ -45,10 +45,11 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
 
         val file = folder.resolve(relative)
 
-        if (file.exists()) {
+        if (file.isFile && response.contentLength() == file.length()) {
             logger.info { "文件 ${file.name} 已存在，跳过下载" }
             response.call.cancel("文件 ${file.name} 已存在，跳过下载")
         } else {
+            file.delete()
             logger.info { "文件 ${file.name} 开始下载" }
             file.outputStream().use { output ->
                 val channel: ByteReadChannel = response.receive()
