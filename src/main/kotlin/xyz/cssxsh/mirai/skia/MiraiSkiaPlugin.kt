@@ -11,23 +11,27 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.1.1",
+        version = "1.1.2",
     ) {
         author("cssxsh")
     }
 ) {
 
-    override fun PluginComponentStorage.onLoad() { checkPlatform() }
+    public val loadJob: Job = launch {
+        checkPlatform()
+        loadJNILibrary(folder = resolveDataFile("lib"))
+    }
 
-    public lateinit var loadJob: Job
-        private set
+    override fun PluginComponentStorage.onLoad() {
+        loadJob.start()
+    }
 
     override fun onEnable() {
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
-        loadJob = launch {
-            loadJNILibrary(folder = resolveDataFile("lib"))
-            loadTypeface(folder = resolveDataFile("fonts"))
-            logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
+        runBlocking {
+            loadJob.join()
         }
+        loadTypeface(folder = resolveDataFile("fonts"))
+        logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
     }
 }
