@@ -2,12 +2,12 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
 
-    id("net.mamoe.mirai-console") version "2.12.0-RC"
+    id("net.mamoe.mirai-console") version "2.12.0"
     id("net.mamoe.maven-central-publish") version "0.7.1"
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.1.2"
+version = "1.1.3"
 
 repositories {
     mavenLocal()
@@ -46,7 +46,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
     }
     implementation("org.jsoup:jsoup:1.14.3")
-    compileOnly("net.mamoe:mirai-core-utils:2.12.0-RC")
+    compileOnly("net.mamoe:mirai-core-utils:2.12.0")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     //
     testImplementation(kotlin("test", "1.6.21"))

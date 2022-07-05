@@ -1,8 +1,11 @@
 package xyz.cssxsh.mirai.skia
 
 import kotlinx.coroutines.*
+import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.jvm.*
+import net.mamoe.mirai.console.plugin.*
+import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
@@ -11,7 +14,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.1.2",
+        version = "1.1.3",
     ) {
         author("cssxsh")
     }
@@ -27,6 +30,10 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     }
 
     override fun onEnable() {
+        // XXX: mirai console version check
+        check(SemVersion.parseRangeRequirement(">= 2.12.0-RC").test(MiraiConsole.version)) {
+            "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
+        }
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
         runBlocking {
             loadJob.join()
