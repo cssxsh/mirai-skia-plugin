@@ -26,6 +26,21 @@ mavenCentralPublish {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-client-okhttp:2.0.3") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+        exclude(group = "org.slf4j")
+    }
+    implementation("io.ktor:ktor-client-encoding:2.0.3") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+        exclude(group = "org.slf4j")
+    }
+    implementation("com.squareup.okhttp3:okhttp:4.10.0") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+        exclude(group = "org.slf4j")
+    }
     api("org.jetbrains.skiko:skiko-awt:0.7.20") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")

@@ -1,9 +1,9 @@
 package xyz.cssxsh.mirai.skia
 
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.compression.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -27,6 +27,7 @@ internal val logger by lazy {
 
 private val http = HttpClient(OkHttp) {
     CurlUserAgent()
+    ContentEncoding()
     install(HttpTimeout) {
         connectTimeoutMillis = 30_000
         socketTimeoutMillis = 30_000
@@ -38,21 +39,21 @@ internal val sevenZ: String by lazy {
 }
 
 internal suspend fun download(urlString: String, folder: File): File = supervisorScope {
-    http.get<HttpStatement>(urlString).execute { response ->
-        val relative = response.headers[HttpHeaders.ContentDisposition]
+    with(http.get(urlString)) {
+        val relative = headers[HttpHeaders.ContentDisposition]
             ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
-            ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
+            ?: request.url.encodedPath.substringAfterLast('/').decodeURLPart()
 
         val file = folder.resolve(relative)
 
-        if (file.isFile && response.contentLength() == file.length()) {
+        if (file.isFile && contentLength() == file.length()) {
             logger.info { "文件 ${file.name} 已存在，跳过下载" }
-            response.call.cancel("文件 ${file.name} 已存在，跳过下载")
+            call.cancel("文件 ${file.name} 已存在，跳过下载")
         } else {
             file.delete()
             logger.info { "文件 ${file.name} 开始下载" }
             file.outputStream().use { output ->
-                val channel: ByteReadChannel = response.receive()
+                val channel: ByteReadChannel = bodyAsChannel()
 
                 while (!channel.isClosedForRead) channel.copyTo(output)
             }
