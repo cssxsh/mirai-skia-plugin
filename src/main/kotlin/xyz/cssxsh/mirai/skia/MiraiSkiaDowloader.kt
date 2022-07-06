@@ -169,18 +169,41 @@ private val GIF_VERSION: String by lazy {
 private const val ICU = "icudtl.dat"
 
 public fun checkPlatform() {
-    // Termux
-    if (hostOs == OS.Linux && "termux" in System.getProperty("user.dir")) {
-        logger.info { "change platform: $hostId to android-arm64" }
-        try {
-            val kt = Class.forName("org.jetbrains.skiko.OsArch_jvmKt")
-            val delegate = kt.getDeclaredField("hostId\$delegate").apply { isAccessible = true }
-            val lazy = delegate.get(null)
-            val value = lazy::class.java.getDeclaredField("_value").apply { isAccessible = true }
-            value.set(lazy, "android-arm64")
-        } catch (_: Throwable) {
-            logger.warning { "修改 hostId 失败" }
+    when (hostOs) {
+        OS.Linux -> {
+            // Termux
+            if ("termux" in System.getProperty("user.dir")) {
+                logger.info { "change platform: $hostId to android-arm64" }
+                try {
+                    val kt = Class.forName("org.jetbrains.skiko.OsArch_jvmKt")
+                    val delegate = kt.getDeclaredField("hostId\$delegate").apply { isAccessible = true }
+                    val lazy = delegate.get(null)
+                    val value = lazy::class.java.getDeclaredField("_value").apply { isAccessible = true }
+                    value.set(lazy, "android-arm64")
+                } catch (_: Throwable) {
+                    logger.warning { "修改 hostId 失败" }
+                }
+            }
+            // OpenGL
+            try {
+                System.loadLibrary("GL")
+            } catch (cause: UnsatisfiedLinkError) {
+                if ("java.library.path" in cause.message.orEmpty()) {
+                    logger.warning { "无法链接 OpenGL, 你可能需要安装 OpenGL, 请尝试安装包 mesa freeglut" }
+                }
+            }
         }
+        OS.Windows -> {
+            // OpenGL
+            try {
+                System.loadLibrary("OPENGL32")
+            } catch (cause: UnsatisfiedLinkError) {
+                if ("java.library.path" in cause.message.orEmpty()) {
+                    logger.warning({ "无法链接 OpenGL, 你可能需要安装 OpenGL" }, cause)
+                }
+            }
+        }
+        else -> {}
     }
 }
 
