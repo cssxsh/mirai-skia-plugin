@@ -238,11 +238,6 @@ public suspend fun loadJNILibrary(folder: File) {
         }
         version.writeText(SKIKO_VERSION)
     }
-    synchronized (System.getProperties()) {
-        @Suppress("INVISIBLE_MEMBER")
-        System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
-        Library.load()
-    }
 
     with(folder.resolve(gif)) {
         val version = folder.resolve("gif.version.txt")
@@ -257,4 +252,9 @@ public suspend fun loadJNILibrary(folder: File) {
     }
     System.setProperty(xyz.cssxsh.gif.Library.GIF_LIBRARY_PATH_PROPERTY, folder.path)
     xyz.cssxsh.gif.Library.load()
+    synchronized (System.getProperties()) {
+        @Suppress("INVISIBLE_MEMBER")
+        System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
+        Library.load()
+    }
 }
