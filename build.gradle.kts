@@ -41,10 +41,11 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    api("org.jetbrains.skiko:skiko-awt:0.7.20") {
+    api("org.jetbrains.skiko:skiko-awt:0.7.23") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
+    shadowLink("org.jetbrains.skiko:skiko-awt")
     implementation("org.jsoup:jsoup:1.14.3")
     compileOnly("net.mamoe:mirai-core-utils:2.12.0")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
