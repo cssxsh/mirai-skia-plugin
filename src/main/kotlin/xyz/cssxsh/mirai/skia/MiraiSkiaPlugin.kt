@@ -14,13 +14,13 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.1.3",
+        version = "1.1.4",
     ) {
         author("cssxsh")
     }
 ) {
 
-    public val loadJob: Job = launch {
+    internal val loadJob: Job = launch {
         checkPlatform()
         loadJNILibrary(folder = resolveDataFile("lib"))
     }
