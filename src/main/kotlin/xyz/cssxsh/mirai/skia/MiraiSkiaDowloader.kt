@@ -14,6 +14,7 @@ import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
 import java.io.*
+import java.nio.file.*
 import java.util.jar.*
 import java.util.zip.*
 
@@ -28,6 +29,7 @@ internal val logger by lazy {
 private val http = HttpClient(OkHttp) {
     CurlUserAgent()
     ContentEncoding()
+    expectSuccess = true
     install(HttpTimeout) {
         connectTimeoutMillis = 30_000
         socketTimeoutMillis = 30_000
@@ -64,15 +66,19 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
 }
 
 /**
- * 加载字体
- * @param folder 字体文件文件夹
+ * 下载字体到指定福利
+ * @param folder 字体文件夹
+ * @see loadTypeface
  */
 @JvmSynthetic
-public suspend fun loadTypeface(folder: File, vararg links: String) {
+public suspend fun downloadTypeface(folder: File, vararg links: String) {
     val downloaded: MutableList<File> = ArrayList()
-    val download = folder.resolve("download")
+    val download = runInterruptible(Dispatchers.IO) {
+        Files.createTempDirectory("skia")
+            .toFile()
+    }
 
-    download.mkdirs()
+    folder.mkdirs()
 
     for (link in links) {
         try {
@@ -108,16 +114,16 @@ public suspend fun loadTypeface(folder: File, vararg links: String) {
                     }
                 }
             }
-            else -> {}
+            else -> runInterruptible(Dispatchers.IO) {
+                Files.move(pack.toPath(), folder.resolve(pack.name).toPath())
+            }
         }
     }
-
-    loadTypeface(folder = folder)
 }
 
 /**
  * 从指定目录加载字体
- * @param folder 字体文件文件夹
+ * @param folder 字体文件夹
  * @see FontUtils.loadTypeface
  */
 public fun loadTypeface(folder: File) {
@@ -141,6 +147,17 @@ public fun loadTypeface(folder: File) {
         }
     }
 }
+
+/**
+ * 一些免费字体链接
+ */
+public val FreeFontLinks: Array<String> = arrayOf(
+    "https://raw.fastgit.org/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf",
+    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正书宋简体.ttf",
+    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正仿宋简体.ttf",
+    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正楷体简体.ttf",
+    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正黑体简体.ttf",
+)
 
 private val SKIKO_MAVEN: String by lazy {
     System.getProperty("xyz.cssxsh.mirai.skia.maven", "https://maven.pkg.jetbrains.space/public/p/compose/dev")

@@ -23,6 +23,9 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     internal val loadJob: Job = launch {
         checkPlatform()
         loadJNILibrary(folder = resolveDataFile("lib"))
+        if (resolveDataFile("fonts").listFiles().isNullOrEmpty()) {
+            downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
+        }
     }
 
     override fun PluginComponentStorage.onLoad() {
