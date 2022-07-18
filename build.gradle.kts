@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.1.4"
+version = "1.1.5"
 
 repositories {
     mavenLocal()
@@ -21,7 +21,6 @@ mavenCentralPublish {
     licenseFromGitHubProject("AGPL-3.0", "master")
     publication {
         artifact(tasks.getByName("buildPlugin"))
-        artifact(tasks.getByName("buildPluginLegacy"))
     }
 }
 
@@ -55,6 +54,10 @@ dependencies {
 
 kotlin {
     explicitApi()
+}
+
+mirai {
+    jvmTarget = JavaVersion.VERSION_11
 }
 
 tasks {
