@@ -7,7 +7,6 @@ import io.ktor.client.plugins.compression.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
@@ -41,21 +40,21 @@ internal val sevenZ: String by lazy {
 }
 
 internal suspend fun download(urlString: String, folder: File): File = supervisorScope {
-    with(http.get(urlString)) {
-        val relative = headers[HttpHeaders.ContentDisposition]
+    http.prepareGet(urlString).execute { response ->
+        val relative = response.headers[HttpHeaders.ContentDisposition]
             ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
-            ?: request.url.encodedPath.substringAfterLast('/').decodeURLPart()
+            ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
 
         val file = folder.resolve(relative)
 
-        if (file.isFile && contentLength() == file.length()) {
+        if (file.isFile && response.contentLength() == file.length()) {
             logger.info { "文件 ${file.name} 已存在，跳过下载" }
-            call.cancel("文件 ${file.name} 已存在，跳过下载")
+            response.cancel("文件 ${file.name} 已存在，跳过下载")
         } else {
             file.delete()
             logger.info { "文件 ${file.name} 开始下载" }
             file.outputStream().use { output ->
-                val channel: ByteReadChannel = bodyAsChannel()
+                val channel = response.bodyAsChannel()
 
                 while (!channel.isClosedForRead) channel.copyTo(output)
             }
