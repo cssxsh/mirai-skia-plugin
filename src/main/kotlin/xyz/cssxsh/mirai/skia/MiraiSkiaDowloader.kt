@@ -72,7 +72,7 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
 @JvmSynthetic
 public suspend fun downloadTypeface(folder: File, vararg links: String) {
     val downloaded: MutableList<File> = ArrayList()
-    val download = runInterruptible(Dispatchers.IO) {
+    val temp = runInterruptible(Dispatchers.IO) {
         Files.createTempDirectory("skia")
             .toFile()
     }
@@ -81,7 +81,7 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
 
     for (link in links) {
         try {
-            downloaded.add(download(urlString = link, folder = download))
+            downloaded.add(download(urlString = link, folder = temp))
         } catch (cause: Throwable) {
             logger.warning({ "字体下载失败, $link" }, cause)
         }
@@ -244,7 +244,15 @@ public suspend fun loadJNILibrary(folder: File) {
         if (version.exists().not() || version.readText() != GIF_VERSION) delete()
 
         if (exists().not()) {
-            download(urlString = release, folder = folder)
+            try {
+                download(urlString = release, folder = folder)
+            } catch (cause: Throwable) {
+                try {
+                    download(urlString = "https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif", folder = folder)
+                } catch (_: Throwable) {
+                    throw cause
+                }
+            }
         }
         version.writeText(GIF_VERSION)
     }
