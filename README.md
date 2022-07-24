@@ -23,10 +23,16 @@ Be based on <https://github.com/JetBrains/skiko>
 ```kotlin
 repositories {
     mavenCentral()
+    // skiko 还未发布正式版到 Central，需要加入下面的 repo
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
     compileOnly("xyz.cssxsh.mirai:mirai-skia-plugin:${version}")
+}
+
+mirai {
+    jvmTarget = JavaVersion.VERSION_11
 }
 ```
 定义 `dependsOn`
@@ -73,6 +79,7 @@ loadJNILibrary()
 
 ### MCL 指令安装
 
+**请确认 mcl.jar 的版本是 2.1.0+**  
 `./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel stable --type plugin`
 
 ### 手动安装
