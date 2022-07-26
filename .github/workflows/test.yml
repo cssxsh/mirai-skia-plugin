@@ -35,3 +35,6 @@ jobs:
 
       - name: GifEncoderTest
         run: ./gradlew test --tests "xyz.cssxsh.gif.EncoderTest" --scan --info
+
+      - name: StyleUtilsTest
+        run: ./gradlew test --tests "xyz.cssxsh.skia.StyleUtilsTest" --scan --info
