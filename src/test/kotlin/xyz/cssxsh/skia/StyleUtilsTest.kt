@@ -5,6 +5,7 @@ import org.jetbrains.skia.*
 import org.junit.jupiter.api.*
 import xyz.cssxsh.mirai.skia.*
 import java.io.File
+import kotlin.random.Random
 
 internal class StyleUtilsTest {
 
@@ -16,13 +17,12 @@ internal class StyleUtilsTest {
     }
 
     @Test
-    fun `low_poly`() {
+    fun generateLowPoly() {
         val file = File("./example/style.test.jpg")
         val image = Image.makeFromEncoded(file.readBytes())
         val bitmap = Bitmap.makeFromImage(image)
-        val surface = StyleUtils.generateLowPoly(bitmap, 0.30, 150, 20, 10, 0)
-        println(surface.imageInfo)
-
-        File("./run/lowpoly.png").writeBytes(surface.makeImageSnapshot().encodeToData()!!.bytes)
+        val r = bitmap.generateLowPoly(0.30, 150, 20, 10, Random.nextInt())
+        println(r.imageInfo)
+        File("./run/render.png").writeBytes(Image.makeFromBitmap(r).encodeToData()!!.bytes)
     }
 }

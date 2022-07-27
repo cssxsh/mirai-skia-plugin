@@ -2,12 +2,12 @@ package xyz.cssxsh.skia
 
 import org.jetbrains.skia.*
 
-public fun Canvas.draw(block: Canvas.() -> Unit): Canvas {
+public inline fun Canvas.draw(crossinline block: Canvas.() -> Unit): Canvas {
     val index = save()
     block.invoke(this)
     return restoreToCount(saveCount = index)
 }
 
-public fun Surface.canvas(block: Canvas.() -> Unit): Canvas {
+public inline fun Surface.canvas(crossinline block: Canvas.() -> Unit): Canvas {
     return canvas.draw(block)
 }

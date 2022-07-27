@@ -19,7 +19,7 @@ public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
     val yellow = Paint().setARGB(0xFF, 0xFF, 0x90, 0x00)
 
     val surface = Surface.makeRasterN32Premul((prefix.width + suffix.width + 50).toInt(), (suffix.height + 40).toInt())
-    with(surface.canvas) {
+    surface.canvas {
         clear(black.color)
         drawTextLine(prefix, 10F, 20 - font.metrics.ascent, white)
         drawRRect(RRect.makeXYWH(prefix.width + 15, 15F, suffix.width + 20, suffix.height + 10, 10F), yellow)
@@ -62,7 +62,7 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
     val mode = FilterMipmap(FilterMode.LINEAR, MipmapMode.NEAREST)
     val source = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
 
-    with(surface.canvas) {
+    surface.canvas {
         for (rect in rects) {
             drawImageRect(
                 image = face,
@@ -108,7 +108,7 @@ public fun choyen(top: String, bottom: String): Surface {
     val surface = Surface.makeRasterN32Premul(width, 290)
     surface.canvas.skew(-0.45F, 0F)
     // top
-    with(surface.canvas) {
+    surface.canvas {
         val x = 70F
         val y = 100F
         val paint = Paint().setStroke(true)
@@ -196,7 +196,7 @@ public fun choyen(top: String, bottom: String): Surface {
         })
     }
     // bottom
-    with(surface.canvas) {
+    surface.canvas {
         val x = 250F
         val y = 230F
         val paint = Paint().setStroke(true)
