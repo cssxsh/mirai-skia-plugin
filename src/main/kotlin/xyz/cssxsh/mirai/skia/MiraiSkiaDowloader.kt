@@ -100,7 +100,10 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
             "zip" -> runInterruptible(Dispatchers.IO) {
                 ZipFile(pack).use { zip ->
                     for (entry in zip.entries()) {
+                        if (entry.isDirectory) continue
+                        if (entry.name.startsWith("__MACOSX")) continue
                         with(folder.resolve(entry.name)) {
+                            parentFile.mkdirs()
                             if (exists().not()) {
                                 outputStream().use { output ->
                                     zip.getInputStream(entry).use { input ->
@@ -156,6 +159,7 @@ public val FreeFontLinks: Array<String> = arrayOf(
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正仿宋简体.ttf",
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正楷体简体.ttf",
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正黑体简体.ttf",
+    "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip"
 )
 
 private val SKIKO_MAVEN: String by lazy {
@@ -231,7 +235,7 @@ public suspend fun loadJNILibrary(folder: File) {
         }
         version.writeText(SKIKO_VERSION)
     }
-    synchronized (System.getProperties()) {
+    synchronized(System.getProperties()) {
         @Suppress("INVISIBLE_MEMBER")
         System.setProperty(Library.SKIKO_LIBRARY_PATH_PROPERTY, folder.path)
         Library.load()
@@ -240,6 +244,7 @@ public suspend fun loadJNILibrary(folder: File) {
     with(folder.resolve(gif)) {
         val version = folder.resolve("gif.version.txt")
         val release = "$GIF_RELEASE/releases/download/v$GIF_VERSION/$gif"
+        val origin = "https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif"
         logger.debug { release }
         if (version.exists().not() || version.readText() != GIF_VERSION) delete()
 
@@ -248,7 +253,7 @@ public suspend fun loadJNILibrary(folder: File) {
                 download(urlString = release, folder = folder)
             } catch (cause: Throwable) {
                 try {
-                    download(urlString = "https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif", folder = folder)
+                    download(urlString = origin, folder = folder)
                 } catch (_: Throwable) {
                     throw cause
                 }

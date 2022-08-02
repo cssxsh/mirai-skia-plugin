@@ -18,8 +18,8 @@ public class OctTreeQuantizer {
 
     public fun quantize(bitmap: Bitmap, maxColorCount: Int = 256): IntArray {
         val node = createNode(0)
-        for (x in 0 until  bitmap.width) {
-            for (y in 0 until  bitmap.height) {
+        for (x in 0 until bitmap.width) {
+            for (y in 0 until bitmap.height) {
                 val color = bitmap.getColor(x, y)
                 addColor(node, color, 0)
                 while (leafCount > maxColorCount) {

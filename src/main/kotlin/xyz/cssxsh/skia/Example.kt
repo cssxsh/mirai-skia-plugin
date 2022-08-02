@@ -345,7 +345,7 @@ public fun zzkia(text: String): Surface {
         )
     }
     val surface = Surface.makeRaster(origin.imageInfo)
-    surface.writePixels(Bitmap.makeFromImage(origin), 0,0)
+    surface.writePixels(Bitmap.makeFromImage(origin), 0, 0)
 
     surface.canvas.rotate(9.8F)
 

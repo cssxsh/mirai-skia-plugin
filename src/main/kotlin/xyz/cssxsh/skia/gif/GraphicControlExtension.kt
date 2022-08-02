@@ -41,7 +41,7 @@ public object GraphicControlExtension {
             AnimationDisposalMode.RESTORE_PREVIOUS -> 0x0C
         }
         if (userInput) flags = flags or 0x02
-        if (transparencyIndex in 0 .. 0xFF) flags = flags or 0x01
+        if (transparencyIndex in 0..0xFF) flags = flags or 0x01
 
         block(
             buffer = buffer,
