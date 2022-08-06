@@ -11,9 +11,10 @@ import java.io.*
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ExampleKtTest {
 
+    private val fonts = File("./run/fonts")
+
     @BeforeAll
     fun init() {
-        val fonts = File("./run/fonts")
         fonts.mkdirs()
         runBlocking {
             System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
@@ -50,6 +51,8 @@ internal class ExampleKtTest {
             }
             else -> Unit
         }
+
+        loadTypeface(folder = fonts)
     }
 
     @Test
