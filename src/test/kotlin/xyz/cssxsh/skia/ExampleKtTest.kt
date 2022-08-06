@@ -7,39 +7,15 @@ import org.jetbrains.skiko.*
 import org.junit.jupiter.api.*
 import xyz.cssxsh.mirai.skia.*
 import java.io.*
-import java.nio.*
 
 internal class ExampleKtTest {
     init {
+        val fonts = File("./run/fonts")
+        fonts.mkdirs()
         runBlocking {
             System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
-        }
-        val fonts = File("./run/fonts")
-        fonts.mkdirs()
-        for (file in fonts.listFiles().orEmpty()) {
-            when (file.extension) {
-                "ttf", "otf", "eot", "fon", "font", "woff", "woff2" -> {
-                    try {
-                        FontUtils.loadTypeface(file.path)
-                    } catch (_: Throwable) {
-
-                    }
-                }
-                "ttc" -> {
-                    try {
-                        val count = file.inputStream().use { input ->
-                            input.skip(8)
-                            ByteBuffer.wrap(input.readNBytes(4)).int
-                        }
-                        for (index in 0 until count) {
-                            FontUtils.loadTypeface(file.path, index)
-                        }
-                    } catch (_: Throwable) {
-
-                    }
-                }
-            }
+            downloadTypeface(folder = MiraiSkiaPlugin.resolveDataFile("fonts"), links = FreeFontLinks)
         }
     }
 
