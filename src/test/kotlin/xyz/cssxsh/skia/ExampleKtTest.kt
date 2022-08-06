@@ -15,7 +15,7 @@ internal class ExampleKtTest {
         runBlocking {
             System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
-            downloadTypeface(folder = MiraiSkiaPlugin.resolveDataFile("fonts"), links = FreeFontLinks)
+            downloadTypeface(folder = fonts, links = FreeFontLinks)
         }
     }
 
