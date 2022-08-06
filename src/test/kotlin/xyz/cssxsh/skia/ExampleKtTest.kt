@@ -53,6 +53,7 @@ internal class ExampleKtTest {
         }
 
         loadTypeface(folder = fonts)
+        println(FontUtils.provider.makeFamilies())
     }
 
     @Test
