@@ -8,8 +8,11 @@ import org.junit.jupiter.api.*
 import xyz.cssxsh.mirai.skia.*
 import java.io.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ExampleKtTest {
-    init {
+
+    @BeforeAll
+    fun init() {
         val fonts = File("./run/fonts")
         fonts.mkdirs()
         runBlocking {
