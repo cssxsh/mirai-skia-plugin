@@ -15,7 +15,8 @@ internal class ExampleKtTest {
         runBlocking {
             System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
-            downloadTypeface(folder = fonts, links = FreeFontLinks)
+            val links = FreeFontLinks.map { it.replace("raw.fastgit.org","raw.githubusercontent.com") }.toTypedArray()
+            downloadTypeface(folder = fonts, links = links)
         }
     }
 
