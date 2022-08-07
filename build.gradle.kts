@@ -47,7 +47,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
     }
     shadowLink("org.jetbrains.skiko:skiko-awt")
-    implementation("org.jsoup:jsoup:1.14.3")
+    implementation("org.jsoup:jsoup:1.15.2")
     compileOnly("net.mamoe:mirai-core-utils:2.12.1")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     //
