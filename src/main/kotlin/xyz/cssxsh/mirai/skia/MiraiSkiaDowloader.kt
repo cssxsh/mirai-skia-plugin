@@ -49,7 +49,6 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
 
         if (file.isFile && response.contentLength() == file.length()) {
             logger.info { "文件 ${file.name} 已存在，跳过下载" }
-            response.cancel("文件 ${file.name} 已存在，跳过下载")
         } else {
             file.delete()
             logger.info { "文件 ${file.name} 开始下载" }
@@ -154,7 +153,7 @@ public fun loadTypeface(folder: File) {
  * 一些免费字体链接
  */
 public val FreeFontLinks: Array<String> = arrayOf(
-    "https://raw.fastgit.org/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf",
+    "https://raw.fastgit.org/googlefonts/noto-emoji/main/fonts/NotoColorEmoji_WindowsCompatible.ttf",
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正书宋简体.ttf",
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正仿宋简体.ttf",
     "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正楷体简体.ttf",
@@ -246,7 +245,7 @@ public suspend fun loadJNILibrary(folder: File) {
         val release = "$GIF_RELEASE/releases/download/v$GIF_VERSION/$gif"
         val origin = "https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif"
         logger.debug { release }
-        if (version.exists().not() || version.readText() != GIF_VERSION) delete()
+        if (version.exists() && version.readText() != GIF_VERSION) delete()
 
         if (exists().not()) {
             try {

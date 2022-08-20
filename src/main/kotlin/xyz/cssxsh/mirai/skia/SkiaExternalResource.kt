@@ -1,6 +1,8 @@
 package xyz.cssxsh.mirai.skia
 
+import io.ktor.utils.io.streams.*
 import kotlinx.coroutines.*
+import net.mamoe.mirai.internal.deps.io.ktor.utils.io.core.Input
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skia.*
 import java.io.*
@@ -19,6 +21,9 @@ public class SkiaExternalResource(override val origin: Data, override val format
     override fun close() {
         closed.completeWith(origin.runCatching { close() })
     }
+
+    @MiraiExperimentalApi
+    override fun input(): Input = origin.bytes.inputStream().asInput().cast()
 
     override fun inputStream(): InputStream = origin.bytes.inputStream()
 }

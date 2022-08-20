@@ -10,7 +10,7 @@ jobs:
         os:
           - windows-latest
           - macos-latest
-          - ubuntu-latest
+          - ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
