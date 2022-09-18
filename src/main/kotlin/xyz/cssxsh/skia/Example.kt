@@ -61,15 +61,24 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
     )
     val mode = FilterMipmap(FilterMode.LINEAR, MipmapMode.NEAREST)
     val source = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
+    val paint = Paint()
+    paint.color = Color.WHITE
 
     surface.canvas {
         for (rect in rects) {
+            paint.blendMode = BlendMode.SRC
+            drawOval(
+                r = rect,
+                paint = paint
+            )
+
+            paint.blendMode = BlendMode.SRC_IN
             drawImageRect(
                 image = face,
                 src = source,
                 dst = rect,
                 samplingMode = mode,
-                paint = null,
+                paint = paint,
                 strict = true
             )
         }
@@ -289,7 +298,7 @@ public fun dear(face: Image): File {
     val surface = Surface.makeRaster(codec.imageInfo)
     val bitmap = Bitmap().apply { allocPixels(codec.imageInfo) }
     val mode = FilterMipmap(FilterMode.LINEAR, MipmapMode.NEAREST)
-    val rect = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
+    val src = Rect.makeWH(face.width.toFloat(), face.height.toFloat())
     val rects = listOf(
         Rect.makeXYWH(48F, 118F, 60F, 60F),
         Rect.makeXYWH(70F, 110F, 55F, 60F),
@@ -305,20 +314,31 @@ public fun dear(face: Image): File {
         Rect.makeXYWH(46F, 136F, 55F, 70F),
         Rect.makeXYWH(23F, 151F, 68F, 58F),
     )
+    val paint = Paint()
+    paint.color = Color.WHITE
 
     Encoder(temp, surface.width, surface.height).use { encoder ->
         encoder.repeat = -1
         for (index in 0 until codec.frameCount) {
             codec.readPixels(bitmap, index)
             surface.writePixels(bitmap, 0, 0)
-            surface.canvas.drawImageRect(
-                image = face,
-                src = rect,
-                dst = rects[index],
-                samplingMode = mode,
-                paint = null,
-                strict = false
-            )
+            surface.canvas {
+                paint.blendMode = BlendMode.SRC_OUT
+                drawOval(
+                    r = rects[index],
+                    paint = paint
+                )
+
+                paint.blendMode = BlendMode.DST_OVER
+                drawImageRect(
+                    image = face,
+                    src = src,
+                    dst = rects[index],
+                    samplingMode = mode,
+                    paint = paint,
+                    strict = false
+                )
+            }
 
             val info = codec.getFrameInfo(index)
             val image = surface.makeImageSnapshot()
