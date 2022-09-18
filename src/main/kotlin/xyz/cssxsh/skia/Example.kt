@@ -405,3 +405,90 @@ public fun zzkia(text: String): Surface {
 
     return surface
 }
+
+/**
+ * [幻影坦克](https://samarium150.github.io/mirage-tank-images/)
+ */
+public fun tank(top: Image, bottom: Image): Surface {
+    val surface = Surface.makeRasterN32Premul(top.width, top.height)
+    val canvas = surface.canvas
+    val paint = Paint()
+    paint.reset()
+
+//    val gray = ColorFilter.makeMatrix(
+//        ColorMatrix(
+//            0.299F, 0.587F, 0.114F, 0F, 0F,  // red
+//            0.299F, 0.587F, 0.114F, 0F, 0F,  // green
+//            0.299F, 0.587F, 0.114F, 0F, 0F,  // blue
+//            0F, 0F, 0F, 0F, 1F
+//        )
+//    )
+
+    canvas.clear(Color.TRANSPARENT)
+    paint.reset()
+    paint.colorFilter = ColorFilter.makeMatrix(
+        ColorMatrix(
+            0.5F, 0F, 0F, 0F, 0.5F,  // red
+            0F, 0.5F, 0F, 0F, 0.5F,  // green
+            0F, 0F, 0.5F, 0F, 0.5F,  // blue
+            0F, 0F, 0F, 0F, 1F
+        )
+    )
+    canvas.drawImage(top, 0F, 0F, paint)
+    val a = surface.makeImageSnapshot()
+
+    canvas.clear(Color.TRANSPARENT)
+    paint.reset()
+    paint.colorFilter = ColorFilter.makeMatrix(
+        ColorMatrix(
+            0.5F, 0F, 0F, 0F, 0F,  // red
+            0F, 0.5F, 0F, 0F, 0F,  // green
+            0F, 0F, 0.5F, 0F, 0F,  // blue
+            0F, 0F, 0F, 0F, 1F
+        )
+    )
+    canvas.drawImage(bottom, 0F, 0F, paint)
+    val b = surface.makeImageSnapshot()
+
+    canvas.clear(Color.TRANSPARENT)
+    paint.reset()
+    paint.colorFilter = ColorFilter.makeMatrix(
+        ColorMatrix(
+            -1F, 0F, 0F, 0F, 1F,  // red
+            0F, -1F, 0F, 0F, 1F,  // green
+            0F, 0F, -1F, 0F, 1F,  // blue
+            0F, 0F, 0F, 0F, 1F
+        )
+    )
+    canvas.drawImage(a, 0F, 0F, paint)
+    paint.reset()
+    paint.blendMode = BlendMode.PLUS
+    canvas.drawImage(b, 0F, 0F, paint)
+    val o = surface.makeImageSnapshot()
+
+    canvas.clear(Color.TRANSPARENT)
+    paint.reset()
+    val dsc = Bitmap.makeFromImage(o)
+    val src = Bitmap.makeFromImage(b)
+    repeat(o.width) { x ->
+        repeat(o.height) { y ->
+            val s = Color4f(dsc.getColor(x, y))
+            val t = Color4f(src.getColor(x, y))
+
+            val g1 = (s.r + s.g + s.b) / 3
+            val g2 = (t.r + t.g + t.b) / 3
+            val g3 = g2 / g1
+
+            val r = Color4f(g3, g3, g3, g1)
+            paint.color4f = r
+
+            canvas.drawPoint(x.toFloat(), y.toFloat(), paint)
+        }
+    }
+//    paint.reset()
+//    canvas.drawImage(o, 0F, 0F, paint)
+//    paint.blendMode = BlendMode.DIFFERENCE
+//    canvas.drawImage(b, 0F, 0F, paint)
+
+    return surface
+}

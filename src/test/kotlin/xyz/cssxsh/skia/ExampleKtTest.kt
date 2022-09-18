@@ -131,4 +131,17 @@ internal class ExampleKtTest {
         val file = File("./run/zzkia.png")
         file.writeBytes(data.bytes)
     }
+
+    @Test
+    fun tank() {
+        val top = Image.makeFromEncoded(File("./example/90446978_p0.png").readBytes())
+        val bottom = Image.makeFromEncoded(File("./example/90487779_p0.png").readBytes())
+        val surface = tank(top = top, bottom = bottom)
+
+        val image = surface.makeImageSnapshot()
+        val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
+
+        val file = File("./run/tank.png")
+        file.writeBytes(data.bytes)
+    }
 }
