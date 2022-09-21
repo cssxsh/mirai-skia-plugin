@@ -40,7 +40,7 @@ public const val PET_PET_SPRITE: String = "xyz.cssxsh.skia.petpet"
 public fun petpet(face: Image, second: Double = 0.02): Data {
     val sprite = try {
         Image.makeFromEncoded(File(System.getProperty(PET_PET_SPRITE, "sprite.png")).readBytes())
-    } catch (cause: Throwable) {
+    } catch (cause: Exception) {
         throw IllegalStateException(
             "please download https://benisland.neocities.org/petpet/img/sprite.png , file path set property $PET_PET_SPRITE",
             cause
@@ -288,7 +288,7 @@ public const val DEAR_ORIGIN: String = "xyz.cssxsh.skia.dear"
 public fun dear(face: Image): File {
     val codec = try {
         Codec.makeFromData(Data.makeFromBytes(File(System.getProperty(DEAR_ORIGIN, "dear.gif")).readBytes()))
-    } catch (cause: Throwable) {
+    } catch (cause: Exception) {
         throw IllegalStateException(
             "please download https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif , file path set property $DEAR_ORIGIN",
             cause
@@ -358,7 +358,7 @@ public const val ZZKIA_ORIGIN: String = "xyz.cssxsh.skia.zzkia"
 public fun zzkia(text: String): Surface {
     val origin = try {
         Image.makeFromEncoded(File(System.getProperty(ZZKIA_ORIGIN, "zzkia.jpg")).readBytes())
-    } catch (cause: Throwable) {
+    } catch (cause: Exception) {
         throw IllegalStateException(
             "please download https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg , file path set property $ZZKIA_ORIGIN",
             cause

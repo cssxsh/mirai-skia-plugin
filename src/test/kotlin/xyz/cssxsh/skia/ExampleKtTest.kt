@@ -20,7 +20,7 @@ internal class ExampleKtTest {
             System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
             val links = FreeFontLinks.map { it.replace("raw.fastgit.org","raw.githubusercontent.com") }.toTypedArray()
-            downloadTypeface(folder = fonts, links = links)
+            if (fonts.list().isEmpty()) downloadTypeface(folder = fonts, links = links)
         }
     }
 

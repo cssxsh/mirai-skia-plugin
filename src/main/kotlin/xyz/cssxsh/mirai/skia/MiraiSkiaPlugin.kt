@@ -14,7 +14,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.1.8",
+        version = "1.1.9",
     ) {
         author("cssxsh")
     }
@@ -23,7 +23,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     internal val loadJob: Job = launch {
         checkPlatform()
         loadJNILibrary(folder = resolveDataFile("lib"))
-        if (resolveDataFile("fonts").listFiles().isNullOrEmpty()) {
+        if (resolveDataFile("fonts").list().isNullOrEmpty()) {
             downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
         }
     }

@@ -20,7 +20,7 @@ import java.util.zip.*
 internal val logger by lazy {
     try {
         MiraiSkiaPlugin.logger
-    } catch (_: Throwable) {
+    } catch (_: ExceptionInInitializerError) {
         MiraiLogger.Factory.create(Library::class)
     }
 }
@@ -81,7 +81,7 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
     for (link in links) {
         try {
             downloaded.add(download(urlString = link, folder = temp))
-        } catch (cause: Throwable) {
+        } catch (cause: Exception) {
             logger.warning({ "字体下载失败, $link" }, cause)
         }
     }
@@ -143,7 +143,7 @@ public fun loadTypeface(folder: File) {
                 }
                 else -> loadTypeface(folder = file)
             }
-        } catch (cause: Throwable) {
+        } catch (cause: Exception) {
             logger.warning({ "加载字体文件失败 ${file.path}" }, cause)
         }
     }
@@ -197,7 +197,7 @@ public fun checkPlatform() {
             val lazy = delegate.get(null)
             val value = lazy::class.java.getDeclaredField("_value").apply { isAccessible = true }
             value.set(lazy, "android-arm64")
-        } catch (_: Throwable) {
+        } catch (_: Exception) {
             logger.warning { "修改 hostId 失败" }
         }
     }
@@ -250,10 +250,10 @@ public suspend fun loadJNILibrary(folder: File) {
         if (exists().not()) {
             try {
                 download(urlString = release, folder = folder)
-            } catch (cause: Throwable) {
+            } catch (cause: Exception) {
                 try {
                     download(urlString = origin, folder = folder)
-                } catch (_: Throwable) {
+                } catch (_: Exception) {
                     throw cause
                 }
             }
