@@ -42,7 +42,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    api("org.jetbrains.skiko:skiko-awt:0.7.32") {
+    api("org.jetbrains.skiko:skiko-awt:0.7.34") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
