@@ -36,7 +36,7 @@ private val http = HttpClient(OkHttp) {
 }
 
 internal val sevenZ: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.skia.sevenZ", "7zz")
+    System.getProperty("xyz.cssxsh.mirai.skia.sevenZ", "7za")
 }
 
 internal suspend fun download(urlString: String, folder: File): File = supervisorScope {

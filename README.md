@@ -91,9 +91,9 @@ loadJNILibrary()
 
 |        OS/Arch         |  Skia  |  Gif  |
 |:----------------------:|:------:|:-----:|
-|     Windows-10-X64     | 0.7.32 | 2.0.4 |
-|       Linux-X64        | 0.7.32 | 2.0.4 |
-|      Linux-Arm64       | 0.7.32 | 2.0.4 |
-|       MacOS-X64        | 0.7.32 | 2.0.4 |
-|      MacOS-Arm64       | 0.7.32 | 2.0.4 |
-| Termux (Android-Arm64) | 0.7.32 | 2.0.4 |
+|     Windows-10-X64     | 0.7.34 | 2.0.8 |
+|       Linux-X64        | 0.7.34 | 2.0.8 |
+|      Linux-Arm64       | 0.7.34 | 2.0.8 |
+|       MacOS-X64        | 0.7.34 | 2.0.8 |
+|      MacOS-Arm64       | 0.7.34 | 2.0.8 |
+| Termux (Android-Arm64) | 0.7.34 | 2.0.8 |
