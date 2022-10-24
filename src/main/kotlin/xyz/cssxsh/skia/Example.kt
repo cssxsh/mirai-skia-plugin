@@ -447,7 +447,24 @@ public fun tank(top: Image, bottom: Image): Surface {
             0F, 0F, 0F, 0F, 1F
         )
     )
-    canvas.drawImage(bottom, 0F, 0F, paint)
+    val rect = if (top.width * bottom.height > bottom.width * top.height) {
+        val width = bottom.width.toFloat().times(top.height).div(bottom.height)
+        Rect.makeXYWH(
+            top.width.minus(width).div(2),
+            0F,
+            width,
+            top.height.toFloat()
+        )
+    } else {
+        val height = bottom.height.toFloat().times(top.width).div(bottom.width)
+        Rect.makeXYWH(
+            0F,
+            top.height.minus(height).div(2),
+            top.width.toFloat(),
+            height
+        )
+    }
+    canvas.drawImageRect(bottom, rect, paint)
     val b = surface.makeImageSnapshot()
 
     canvas.clear(Color.TRANSPARENT)
