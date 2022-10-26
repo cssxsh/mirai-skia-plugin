@@ -38,6 +38,16 @@ public object MiraiSkiaPlugin : KotlinPlugin(
             "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
         }
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
+        loadJob.invokeOnCompletion { cause ->
+            if (cause is UnsatisfiedLinkError) {
+                val message = cause.message
+                if (message != null && message.endsWith(": cannot open shared object file: No such file or directory")) {
+                    val lib = message.substringBeforeLast(": cannot open shared object file: No such file or directory")
+                        .substringAfterLast(": ")
+                    logger.warning { "可能缺少相应库文件，请参阅: https://pkgs.org/search/?q=${lib}" }
+                }
+            }
+        }
         runBlocking {
             loadJob.join()
         }
