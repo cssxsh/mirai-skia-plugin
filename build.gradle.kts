@@ -43,6 +43,7 @@ dependencies {
         exclude(group = "org.slf4j")
     }
     implementation("org.apache.commons:commons-compress:1.21")
+    implementation("org.tukaani:xz:1.9")
     api("org.jetbrains.skiko:skiko-awt:0.7.34") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
