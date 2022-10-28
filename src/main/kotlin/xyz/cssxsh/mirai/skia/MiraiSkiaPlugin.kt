@@ -9,6 +9,7 @@ import net.mamoe.mirai.console.util.*
 import net.mamoe.mirai.utils.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
+import java.io.Closeable
 
 public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
@@ -20,8 +21,31 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     }
 ) {
 
+    @OptIn(ConsoleExperimentalApi::class)
+    internal val process: Closeable? by lazy {
+        try {
+            val impl = MiraiConsole.newProcessProgress()
+            listener = listener@{ message ->
+                launch {
+                    impl.updateText(message)
+                }
+
+                return@listener { total, contentLength ->
+                    if (contentLength != 0L) {
+                        impl.update(total, contentLength)
+                        impl.rerender()
+                    }
+                }
+            }
+            impl
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
     internal val loadJob: Job = launch {
         checkPlatform()
+        process
         loadJNILibrary(folder = resolveDataFile("lib"))
         if (resolveDataFile("fonts").list().isNullOrEmpty()) {
             downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
@@ -39,17 +63,27 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         }
         logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
         loadJob.invokeOnCompletion { cause ->
-            if (cause is UnsatisfiedLinkError) {
-                val message = cause.message
-                if (message != null && message.endsWith(": cannot open shared object file: No such file or directory")) {
+            val message = cause?.message
+            if (cause is UnsatisfiedLinkError && message != null) {
+                if (message.endsWith(": cannot open shared object file: No such file or directory")) {
                     val lib = message.substringBeforeLast(": cannot open shared object file: No such file or directory")
                         .substringAfterLast(": ")
                     logger.warning { "可能缺少相应库文件，请参阅: https://pkgs.org/search/?q=${lib}" }
                 }
+                if ("GLIBC_" in message) {
+                    val version = message.substringAfterLast("version `")
+                        .substringBeforeLast("' not found")
+                    logger.warning { "可能缺少 ${version}, 请安装此版本 glibc" }
+                }
             }
         }
-        runBlocking {
-            loadJob.join()
+        try {
+            runBlocking {
+                loadJob.join()
+            }
+        } finally {
+            listener = { null }
+            process?.close()
         }
         loadTypeface(folder = resolveDataFile("fonts"))
         logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }

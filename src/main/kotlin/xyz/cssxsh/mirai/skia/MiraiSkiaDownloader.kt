@@ -1,6 +1,7 @@
 package xyz.cssxsh.mirai.skia
 
 import io.ktor.client.*
+import io.ktor.client.content.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.compression.*
@@ -10,6 +11,12 @@ import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.utils.*
+import okhttp3.Dns
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.dnsoverhttps.DnsOverHttps
+import org.apache.commons.compress.archivers.sevenz.*
+import org.apache.commons.compress.archivers.tar.*
+import org.apache.commons.compress.compressors.gzip.*
 import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
 import java.io.*
@@ -33,34 +40,56 @@ private val http = HttpClient(OkHttp) {
         connectTimeoutMillis = 30_000
         socketTimeoutMillis = 30_000
     }
-}
+    engine {
+        config {
+            dns(object : Dns {
+                private val url = System.getProperty("xyz.cssxsh.mirai.skia.doh", "https://public.dns.iij.jp/dns-query")
+                private val doh = DnsOverHttps.Builder()
+                    .client(okhttp3.OkHttpClient())
+                    .url(url.toHttpUrl())
+                    .includeIPv6(true)
+                    .build()
 
-internal val sevenZ: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.skia.sevenZ", "7za")
-}
-
-internal suspend fun download(urlString: String, folder: File): File = supervisorScope {
-    http.prepareGet(urlString).execute { response ->
-        val relative = response.headers[HttpHeaders.ContentDisposition]
-            ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
-            ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
-
-        val file = folder.resolve(relative)
-
-        if (file.isFile && response.contentLength() == file.length()) {
-            logger.info { "文件 ${file.name} 已存在，跳过下载" }
-        } else {
-            file.delete()
-            logger.info { "文件 ${file.name} 开始下载" }
-            file.outputStream().use { output ->
-                val channel = response.bodyAsChannel()
-
-                while (!channel.isClosedForRead) channel.copyTo(output)
-            }
+                @Throws(java.net.UnknownHostException::class)
+                override fun lookup(hostname: String): List<java.net.InetAddress> {
+                    return try {
+                        doh.lookup(hostname)
+                    } catch (_: java.net.UnknownHostException) {
+                        Dns.SYSTEM.lookup(hostname)
+                    }
+                }
+            })
         }
-
-        file
     }
+}
+
+internal var listener: (urlString: String) -> ProgressListener? = { null }
+
+internal suspend fun download(urlString: String, folder: File): File {
+    val name = urlString.substringAfterLast('/').decodeURLPart()
+    val listener = listener("<${name}>下载中")
+
+    val response = http.get(urlString) {
+        onDownload(listener)
+    }
+    val relative = response.headers[HttpHeaders.ContentDisposition]
+        ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
+        ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
+
+    val file = folder.resolve(relative)
+
+    if (file.isFile && response.contentLength() == file.length()) {
+        logger.info { "文件 ${file.name} 已存在，跳过下载" }
+    } else {
+        file.delete()
+        logger.info { "文件 ${file.name} 开始下载" }
+        file.outputStream().use { output ->
+            val channel = response.bodyAsChannel()
+
+            while (!channel.isClosedForRead) channel.copyTo(output)
+        }
+    }
+    return file
 }
 
 /**
@@ -70,7 +99,7 @@ internal suspend fun download(urlString: String, folder: File): File = superviso
  */
 @JvmSynthetic
 public suspend fun downloadTypeface(folder: File, vararg links: String) {
-    val downloaded: MutableList<File> = ArrayList()
+    val downloaded: MutableList<File> = ArrayList(links.size)
     val temp = runInterruptible(Dispatchers.IO) {
         Files.createTempDirectory("skia")
             .toFile()
@@ -89,31 +118,58 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
     for (pack in downloaded) {
         when (pack.extension) {
             "7z" -> runInterruptible(Dispatchers.IO) {
-                ProcessBuilder(sevenZ, "x", pack.absolutePath, "-y")
-                    .directory(folder)
-                    .start()
-                    // 防止卡顿
-                    .apply { inputStream.transferTo(OutputStream.nullOutputStream()) }
-                    .waitFor()
+                SevenZFile(pack).use { sevenZ ->
+                    for (entry in sevenZ.entries) {
+                        if (entry.isDirectory) continue
+                        if (entry.hasStream().not()) continue
+                        val target = folder.resolve(entry.name)
+                        if (target.extension !in FontExtensions) continue
+                        target.parentFile.mkdirs()
+                        target.outputStream().use { output ->
+                            sevenZ.getInputStream(entry).use { input ->
+                                input.copyTo(output)
+                            }
+                        }
+                        target.setLastModified(entry.lastModifiedDate.time)
+                    }
+                }
             }
             "zip" -> runInterruptible(Dispatchers.IO) {
                 ZipFile(pack).use { zip ->
                     for (entry in zip.entries()) {
                         if (entry.isDirectory) continue
                         if (entry.name.startsWith("__MACOSX")) continue
-                        with(folder.resolve(entry.name)) {
-                            parentFile.mkdirs()
-                            if (exists().not()) {
-                                outputStream().use { output ->
-                                    zip.getInputStream(entry).use { input ->
-                                        input.transferTo(output)
-                                    }
-                                }
+                        val target = folder.resolve(entry.name)
+                        if (target.extension !in FontExtensions) continue
+                        target.parentFile.mkdirs()
+                        target.outputStream().use { output ->
+                            zip.getInputStream(entry).use { input ->
+                                input.copyTo(output)
                             }
-                            setLastModified(entry.lastModifiedTime.toMillis())
                         }
+                        target.setLastModified(entry.lastModifiedTime.toMillis())
                     }
                 }
+            }
+            "gz" -> runInterruptible(Dispatchers.IO) {
+                pack.inputStream()
+                    .buffered()
+                    .let(::GzipCompressorInputStream)
+                    .let(::TarArchiveInputStream)
+                    .use { input ->
+                        while (true) {
+                            val entry = input.nextTarEntry ?: break
+                            if (entry.isFile.not()) continue
+                            if (input.canReadEntryData(entry).not()) continue
+                            val target = folder.resolve(entry.name)
+                            if (target.extension !in FontExtensions) continue
+                            target.parentFile.mkdirs()
+                            target.outputStream().use { output ->
+                                input.copyTo(output)
+                            }
+                            target.setLastModified(entry.modTime.time)
+                        }
+                    }
             }
             else -> runInterruptible(Dispatchers.IO) {
                 Files.move(pack.toPath(), folder.resolve(pack.name).toPath())
@@ -149,16 +205,19 @@ public fun loadTypeface(folder: File) {
     }
 }
 
+
+public val FontExtensions: Array<String> = arrayOf("ttf", "otf", "eot", "fon", "font", "woff", "woff2", "ttc")
+
 /**
  * 一些免费字体链接
  */
 public val FreeFontLinks: Array<String> = arrayOf(
-    "https://raw.fastgit.org/googlefonts/noto-emoji/main/fonts/NotoColorEmoji_WindowsCompatible.ttf",
-    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正书宋简体.ttf",
-    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正仿宋简体.ttf",
-    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正楷体简体.ttf",
-    "https://raw.fastgit.org/wordshub/free-font/master/assets/font/中文/方正字体系列/方正黑体简体.ttf",
-    "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip"
+    "https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji_WindowsCompatible.ttf",
+//    "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip",
+    "https://mirai.mamoe.net/assets/uploads/files/1666870589379-方正书宋简体.ttf",
+    "https://mirai.mamoe.net/assets/uploads/files/1666870589357-方正仿宋简体.ttf",
+    "https://mirai.mamoe.net/assets/uploads/files/1666870589334-方正楷体简体.ttf",
+    "https://mirai.mamoe.net/assets/uploads/files/1666870589312-方正黑体简体.ttf"
 )
 
 private val SKIKO_MAVEN: String by lazy {

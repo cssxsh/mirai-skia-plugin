@@ -16,11 +16,15 @@ internal class ExampleKtTest {
     @BeforeAll
     fun init() {
         fonts.mkdirs()
+        System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
+        val links = arrayOf(
+            "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip",
+            "https://github.com/googlefonts/noto-emoji/archive/refs/tags/v2.038.tar.gz",
+            "https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z"
+        )
         runBlocking {
-            System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
             loadJNILibrary(folder = File("./run/lib"))
-            val links = FreeFontLinks.map { it.replace("raw.fastgit.org","raw.githubusercontent.com") }.toTypedArray()
-            if (fonts.list().isEmpty()) downloadTypeface(folder = fonts, links = links)
+            if (fonts.list().isNullOrEmpty()) downloadTypeface(folder = fonts, links = links)
         }
     }
 

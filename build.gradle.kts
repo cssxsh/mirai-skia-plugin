@@ -37,11 +37,12 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    implementation("com.squareup.okhttp3:okhttp:4.10.0") {
+    implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.10.0") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
+    implementation("org.apache.commons:commons-compress:1.21")
     api("org.jetbrains.skiko:skiko-awt:0.7.34") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
