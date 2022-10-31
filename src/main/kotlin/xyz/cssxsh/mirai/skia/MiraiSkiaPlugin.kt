@@ -43,25 +43,23 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         }
     }
 
-    internal val loadJob: Job = launch {
+    internal val loadJob: Job = launch(start = CoroutineStart.LAZY) {
         checkPlatform()
         process
-        loadJNILibrary(folder = resolveDataFile("lib"))
-        if (resolveDataFile("fonts").list().isNullOrEmpty()) {
-            downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
+        try {
+            loadJNILibrary(folder = resolveDataFile("lib"))
+            if (resolveDataFile("fonts").list().isNullOrEmpty()) {
+                downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
+            }
+        } finally {
+            listener = { null }
+            runInterruptible(Dispatchers.IO) {
+                process?.close()
+            }
         }
     }
 
     override fun PluginComponentStorage.onLoad() {
-        loadJob.start()
-    }
-
-    override fun onEnable() {
-        // XXX: mirai console version check
-        check(SemVersion.parseRangeRequirement(">= 2.12.0-RC").test(MiraiConsole.version)) {
-            "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
-        }
-        logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
         loadJob.invokeOnCompletion { cause ->
             val message = cause?.message
             if (cause is UnsatisfiedLinkError && message != null) {
@@ -77,13 +75,17 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                 }
             }
         }
-        try {
-            runBlocking {
-                loadJob.join()
-            }
-        } finally {
-            listener = { null }
-            process?.close()
+        loadJob.start()
+    }
+
+    override fun onEnable() {
+        // XXX: mirai console version check
+        check(SemVersion.parseRangeRequirement(">= 2.12.0-RC").test(MiraiConsole.version)) {
+            "$name $version 需要 Mirai-Console 版本 >= 2.12.0，目前版本是 ${MiraiConsole.version}"
+        }
+        logger.info { "platform: ${hostId}, skia: ${Version.skia}, skiko: ${Version.skiko}" }
+        runBlocking {
+            loadJob.join()
         }
         loadTypeface(folder = resolveDataFile("fonts"))
         logger.info { "fonts: ${FontUtils.provider.makeFamilies().keys}" }
