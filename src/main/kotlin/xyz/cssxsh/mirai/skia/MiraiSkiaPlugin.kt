@@ -68,6 +68,11 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                         .substringAfterLast(": ")
                     logger.warning { "可能缺少相应库文件，请参阅: https://pkgs.org/search/?q=${lib}" }
                 }
+                if (message.endsWith(": 无法打开共享对象文件: 没有那个文件或目录")) {
+                    val lib = message.substringBeforeLast(": 无法打开共享对象文件: 没有那个文件或目录")
+                        .substringAfterLast(": ")
+                    logger.warning { "可能缺少相应库文件，请参阅: https://pkgs.org/search/?q=${lib}" }
+                }
                 if ("GLIBC_" in message) {
                     val version = message.substringAfterLast("version `")
                         .substringBeforeLast("' not found")
