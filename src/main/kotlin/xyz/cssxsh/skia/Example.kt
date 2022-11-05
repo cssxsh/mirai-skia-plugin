@@ -40,7 +40,7 @@ public const val PET_PET_SPRITE: String = "xyz.cssxsh.skia.petpet"
 public fun petpet(face: Image, second: Double = 0.02): Data {
     val sprite = try {
         Image.makeFromEncoded(File(System.getProperty(PET_PET_SPRITE, "sprite.png")).readBytes())
-    } catch (cause: Exception) {
+    } catch (cause: IOException) {
         throw IllegalStateException(
             "please download https://benisland.neocities.org/petpet/img/sprite.png , file path set property $PET_PET_SPRITE",
             cause

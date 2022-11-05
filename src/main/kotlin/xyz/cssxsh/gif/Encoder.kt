@@ -21,18 +21,37 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
             field = value
         }
 
+    /**
+     * 写入帧
+     * @param frame 帧
+     */
     public fun writeFrame(frame: Frame) {
         writeFrame(_ptr, frame._ptr)
     }
 
+    /**
+     * 写入图片到帧
+     * @param image 图片
+     * @param mills 延时
+     * @param disposal 切换模式
+     */
     public fun writeImage(image: Image, mills: Int, disposal: AnimationDisposalMode, speed: Int = 1) {
         writeImage(_ptr, image._ptr, mills / 10, disposal.ordinal, speed)
     }
 
+    /**
+     * 写入位图到帧
+     * @param bitmap 位图
+     * @param mills 延时
+     * @param disposal 切换模式
+     */
     public fun writeBitmap(bitmap: Bitmap, mills: Int, disposal: AnimationDisposalMode, speed: Int = 1) {
         writeBitmap(_ptr, bitmap._ptr, mills / 10, disposal.ordinal, speed)
     }
 
+    /**
+     * 关闭，并输出内容到文件
+     */
     public override fun close() {
         close(_ptr)
     }

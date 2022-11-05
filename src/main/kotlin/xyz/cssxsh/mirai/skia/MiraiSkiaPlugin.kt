@@ -51,8 +51,9 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         process
         try {
             loadJNILibrary(folder = resolveDataFile("lib"))
-            if (resolveDataFile("fonts").list().isNullOrEmpty()) {
-                downloadTypeface(folder = resolveDataFile("fonts"), links = FreeFontLinks)
+            val fonts = resolveDataFile("fonts")
+            if (fonts.list().isNullOrEmpty()) {
+                downloadTypeface(folder = fonts, links = FreeFontLinks)
             }
         } finally {
             listener = { null }

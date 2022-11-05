@@ -4,9 +4,16 @@ import org.jetbrains.skia.*
 import kotlin.math.pow
 import kotlin.reflect.full.*
 
+/**
+ * 马赛克构建器
+ */
 public sealed class MosaicOption {
     internal abstract fun convert(bitmap: Bitmap)
 
+    /**
+     * 三角形马赛克
+     * @param side 边长
+     */
     public data class Rectangle(var side: Int = 10) : MosaicOption() {
         override fun convert(bitmap: Bitmap) {
             val offset = side
@@ -30,6 +37,10 @@ public sealed class MosaicOption {
         }
     }
 
+    /**
+     * 六边形马赛克
+     * @param side 边长
+     */
     public data class Hexagon(var side: Int = 10) : MosaicOption() {
         override fun convert(bitmap: Bitmap) {
             val width = (side * 1.5).toInt()
@@ -80,6 +91,8 @@ public sealed class MosaicOption {
 
 /**
  * 绘制马赛克
+ * @param area 绘制区域
+ * @param options 马赛克绘制器
  */
 public fun Surface.drawMosaic(area: IRect, options: MosaicOption) {
     val bitmap = Bitmap()
@@ -93,6 +106,7 @@ public fun Surface.drawMosaic(area: IRect, options: MosaicOption) {
 
 /**
  * 绘制马赛克
+ * @param area 绘制区域
  */
 public inline fun <reified O : MosaicOption> Surface.drawMosaic(area: IRect, block: O.() -> Unit = {}) {
     drawMosaic(area = area, options = O::class.createInstance().apply(block))
