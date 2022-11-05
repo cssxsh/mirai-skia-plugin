@@ -4,6 +4,7 @@
 
 [![maven-central](https://img.shields.io/maven-central/v/xyz.cssxsh.mirai/mirai-skia-plugin)](https://search.maven.org/artifact/xyz.cssxsh.mirai/mirai-skia-plugin)
 [![test](https://github.com/cssxsh/mirai-skia-plugin/actions/workflows/test.yml/badge.svg)](https://github.com/cssxsh/mirai-skia-plugin/actions/workflows/test.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ad7fe0e93f794914894fe5e6d3f23b2c)](https://www.codacy.com/gh/cssxsh/mirai-skia-plugin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cssxsh/mirai-skia-plugin&amp;utm_campaign=Badge_Grade)
 
 Be based on <https://github.com/JetBrains/skiko>
 
@@ -72,28 +73,30 @@ loadJNILibrary()
 
 由于 Skiko 没有携带 GIF 编码器，
 这里提供两个实现
-* [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) - [petpet](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
-* [rust](src/main/kotlin/xyz/cssxsh/gif) (Base on [JNI](https://github.com/cssxsh/gif-jni)) - [dear](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+*   [kotlin](src/main/kotlin/xyz/cssxsh/skia/gif) - [petpet](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
+*   [rust](src/main/kotlin/xyz/cssxsh/gif) (Base on [JNI](https://github.com/cssxsh/gif-jni)) - [dear](src/main/kotlin/xyz/cssxsh/skia/Example.kt)
 
 ## 安装
 
 ### MCL 指令安装
 
 **请确认 mcl.jar 的版本是 2.1.0+**  
-`./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel stable --type plugin`
+`./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel maven-stable --type plugin`
 
 ### 手动安装
 
-1. 运行 [Mirai Console](https://github.com/mamoe/mirai-console) 生成`plugins`文件夹
-2. 从 [Releases](https://github.com/cssxsh/mirai-skia-plugin/releases) 下载`jar`并将其放入`plugins`文件夹中
+1.  从 [Releases](https://github.com/cssxsh/mirai-skia-plugin/releases) 或者 [Maven](https://repo1.maven.org/maven2/xyz/cssxsh/mirai/mirai-skia-plugin/) 下载 `mirai2.jar`
+2.  将其放入 `plugins` 文件夹中
 
 ## 兼容性
 
-|        OS/Arch         |  Skia  |  Gif  |
-|:----------------------:|:------:|:-----:|
-|     Windows-10-X64     | 0.7.34 | 2.0.8 |
-|       Linux-X64        | 0.7.34 | 2.0.8 |
-|      Linux-Arm64       | 0.7.34 | 2.0.8 |
-|       MacOS-X64        | 0.7.34 | 2.0.8 |
-|      MacOS-Arm64       | 0.7.34 | 2.0.8 |
-| Termux (Android-Arm64) | 0.7.34 | 2.0.8 |
+|        OS/Arch         | Plugin | Skiko  |  Gif  |
+|:----------------------:|:------:|:------:|:-----:|
+|     Windows-10-X64     | 1.2.0  | 0.7.34 | 2.0.8 |
+|     GNU/Linux-X64      | 1.2.0  | 0.7.34 | 2.0.8 |
+|    GNU/Linux-ARM64     | 1.2.0  | 0.7.34 | 2.0.8 |
+|       MacOS-X64        | 1.2.0  | 0.7.34 | 2.0.8 |
+|      MacOS-ARM64       | 1.2.0  | 0.7.34 | 2.0.8 |
+| Termux (Android-ARM64) | 1.2.0  | 0.7.34 | 2.0.8 |
+
+暂时不支持 `Alpine Linux` 等 `MUSL/linux` 系统, 你可以关注 [![issue-11](https://shields.io/github/issues/detail/state/cssxsh/mirai-skia-plugin/11)](https://github.com/cssxsh/mirai-skia-plugin/issues/11)

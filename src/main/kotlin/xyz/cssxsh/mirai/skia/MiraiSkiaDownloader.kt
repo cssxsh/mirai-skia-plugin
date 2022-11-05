@@ -115,66 +115,67 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
         }
     }
 
-    for (pack in downloaded) {
-        when (pack.extension) {
-            "7z" -> runInterruptible(Dispatchers.IO) {
-                SevenZFile(pack).use { sevenZ ->
-                    for (entry in sevenZ.entries) {
-                        if (entry.isDirectory) continue
-                        if (entry.hasStream().not()) continue
-                        val target = folder.resolve(entry.name)
-                        if (target.extension !in FontExtensions) continue
-                        target.parentFile.mkdirs()
-                        target.outputStream().use { output ->
-                            sevenZ.getInputStream(entry).use { input ->
-                                input.copyTo(output)
-                            }
-                        }
-                        target.setLastModified(entry.lastModifiedDate.time)
+    for (pack in downloaded) runInterruptible(Dispatchers.IO) {
+        unpack(pack, folder)
+    }
+}
+
+/**
+ * 解压压缩包到指定文件夹
+ * @param pack 压缩包
+ * @param folder 文件夹
+ */
+public fun unpack(pack: File, folder: File) {
+    when (pack.extension) {
+        "7z" -> SevenZFile(pack).use { sevenZ ->
+            for (entry in sevenZ.entries) {
+                if (entry.isDirectory) continue
+                if (entry.hasStream().not()) continue
+                val target = folder.resolve(entry.name)
+                if (target.extension !in FontExtensions) continue
+                target.parentFile.mkdirs()
+                target.outputStream().use { output ->
+                    sevenZ.getInputStream(entry).use { input ->
+                        input.copyTo(output)
                     }
                 }
-            }
-            "zip" -> runInterruptible(Dispatchers.IO) {
-                ZipFile(pack).use { zip ->
-                    for (entry in zip.entries()) {
-                        if (entry.isDirectory) continue
-                        if (entry.name.startsWith("__MACOSX")) continue
-                        val target = folder.resolve(entry.name)
-                        if (target.extension !in FontExtensions) continue
-                        target.parentFile.mkdirs()
-                        target.outputStream().use { output ->
-                            zip.getInputStream(entry).use { input ->
-                                input.copyTo(output)
-                            }
-                        }
-                        target.setLastModified(entry.lastModifiedTime.toMillis())
-                    }
-                }
-            }
-            "gz" -> runInterruptible(Dispatchers.IO) {
-                pack.inputStream()
-                    .buffered()
-                    .let(::GzipCompressorInputStream)
-                    .let(::TarArchiveInputStream)
-                    .use { input ->
-                        while (true) {
-                            val entry = input.nextTarEntry ?: break
-                            if (entry.isFile.not()) continue
-                            if (input.canReadEntryData(entry).not()) continue
-                            val target = folder.resolve(entry.name)
-                            if (target.extension !in FontExtensions) continue
-                            target.parentFile.mkdirs()
-                            target.outputStream().use { output ->
-                                input.copyTo(output)
-                            }
-                            target.setLastModified(entry.modTime.time)
-                        }
-                    }
-            }
-            else -> runInterruptible(Dispatchers.IO) {
-                Files.move(pack.toPath(), folder.resolve(pack.name).toPath())
+                target.setLastModified(entry.lastModifiedDate.time)
             }
         }
+        "zip" -> ZipFile(pack).use { zip ->
+            for (entry in zip.entries()) {
+                if (entry.isDirectory) continue
+                if (entry.name.startsWith("__MACOSX")) continue
+                val target = folder.resolve(entry.name)
+                if (target.extension !in FontExtensions) continue
+                target.parentFile.mkdirs()
+                target.outputStream().use { output ->
+                    zip.getInputStream(entry).use { input ->
+                        input.copyTo(output)
+                    }
+                }
+                target.setLastModified(entry.lastModifiedTime.toMillis())
+            }
+        }
+        "gz" -> pack.inputStream()
+            .buffered()
+            .let(::GzipCompressorInputStream)
+            .let(::TarArchiveInputStream)
+            .use { input ->
+                while (true) {
+                    val entry = input.nextTarEntry ?: break
+                    if (entry.isFile.not()) continue
+                    if (input.canReadEntryData(entry).not()) continue
+                    val target = folder.resolve(entry.name)
+                    if (target.extension !in FontExtensions) continue
+                    target.parentFile.mkdirs()
+                    target.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                    target.setLastModified(entry.modTime.time)
+                }
+            }
+        else -> Files.move(pack.toPath(), folder.resolve(pack.name).toPath())
     }
 }
 
@@ -205,7 +206,9 @@ public fun loadTypeface(folder: File) {
     }
 }
 
-
+/**
+ * 字体后缀名
+ */
 public val FontExtensions: Array<String> = arrayOf("ttf", "otf", "eot", "fon", "font", "woff", "woff2", "ttc")
 
 /**
@@ -246,6 +249,9 @@ private val GIF_VERSION: String by lazy {
 
 private const val ICU = "icudtl.dat"
 
+/**
+ * 检查平台问题并修正
+ */
 public fun checkPlatform() {
     // Termux
     if (hostOs == OS.Linux && "termux" in System.getProperty("user.dir")) {
@@ -262,6 +268,9 @@ public fun checkPlatform() {
     }
 }
 
+/**
+ * 在 [folder] 中加载所需JNI库
+ */
 public suspend fun loadJNILibrary(folder: File) {
     val skiko = System.mapLibraryName("skiko-$hostId")
     val gif = System.mapLibraryName("gif-$hostId")

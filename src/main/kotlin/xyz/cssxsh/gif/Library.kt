@@ -6,6 +6,7 @@ import java.nio.file.*
 import java.util.concurrent.atomic.*
 
 /**
+ * GIF JNI 加载器
  * @see org.jetbrains.skiko.Library
  */
 public object Library {

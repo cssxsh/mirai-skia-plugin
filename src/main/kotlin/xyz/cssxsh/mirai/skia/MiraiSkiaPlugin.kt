@@ -11,6 +11,9 @@ import org.jetbrains.skiko.*
 import xyz.cssxsh.skia.*
 import java.io.Closeable
 
+/**
+ * mirai-skia-plugin 插件主类
+ */
 public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",

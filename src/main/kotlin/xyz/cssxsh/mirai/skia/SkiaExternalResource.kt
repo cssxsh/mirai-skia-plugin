@@ -4,6 +4,10 @@ import net.mamoe.mirai.utils.*
 import org.jetbrains.skia.*
 import java.io.*
 
+/**
+ * [ExternalResource] 关于 skia 的实现
+ * @see ExternalResource
+ */
 public class SkiaExternalResource(override val origin: Data, override val formatName: String) :
     ExternalResource, AbstractExternalResource({ origin.close() }) {
     public constructor(image: Image, format: EncodedImageFormat) : this(

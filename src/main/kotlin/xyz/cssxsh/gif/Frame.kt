@@ -4,6 +4,9 @@ import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.*
 import java.io.*
 
+/**
+ * GIF帧
+ */
 @Suppress("INVISIBLE_MEMBER")
 public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Closeable {
     public constructor() : this(ptr = default())
