@@ -288,7 +288,7 @@ public const val DEAR_ORIGIN: String = "xyz.cssxsh.skia.dear"
 public fun dear(face: Image): File {
     val codec = try {
         Codec.makeFromData(Data.makeFromBytes(File(System.getProperty(DEAR_ORIGIN, "dear.gif")).readBytes()))
-    } catch (cause: Exception) {
+    } catch (cause: IOException) {
         throw IllegalStateException(
             "please download https://tva3.sinaimg.cn/large/003MWcpMly8gv4s019bzsg606o06o40902.gif , file path set property $DEAR_ORIGIN",
             cause

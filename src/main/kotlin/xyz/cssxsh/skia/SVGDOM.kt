@@ -32,39 +32,45 @@ public fun SVGDOM.Companion.makeFromFile(xml: File, baseUri: String = ""): SVGDO
 public fun SVGDOM.Companion.makeFromXml(document: Document): SVGDOM {
     for (style in document.select("style")) {
         val text = style?.text() ?: continue
-        var pos = 0
-
-        while (true) {
-            val before = text.indexOf('{', pos)
-            if (before == -1) break
-            val after = text.indexOf('}', before)
-            if (after == -1) break
-
-            val query = text.substring(pos, before)
-            val attributes = text.substring(before + 1, after)
-                .splitToSequence(';')
-                .filter { it.isNotBlank() }
-                .map { it.split(':') }
-            val elements = try {
-                document.select(query)
-            } catch (_: Selector.SelectorParseException) {
-                pos = after + 1
-                continue
-            }
-
-            for ((key, value) in attributes) {
-                for (element in elements) {
-                    element.attr(key, value)
-                }
-            }
-
-            pos = after + 1
-        }
-
+        document.apply(style = text)
         style.remove()
     }
 
     return SVGDOM(data = Data.makeFromBytes(bytes = document.toString().toByteArray()))
+}
+
+/**
+ * 将 [style] 生效
+ */
+private fun Document.apply(style: String) {
+    var pos = 0
+
+    while (true) {
+        val before = style.indexOf('{', pos)
+        if (before == -1) break
+        val after = style.indexOf('}', before)
+        if (after == -1) break
+
+        val query = style.substring(pos, before)
+        val attributes = style.substring(before + 1, after)
+            .splitToSequence(';')
+            .filter { it.isNotBlank() }
+            .map { it.split(':') }
+        val elements = try {
+            select(query)
+        } catch (_: Selector.SelectorParseException) {
+            pos = after + 1
+            continue
+        }
+
+        for ((key, value) in attributes) {
+            for (element in elements) {
+                element.attr(key, value)
+            }
+        }
+
+        pos = after + 1
+    }
 }
 
 /**

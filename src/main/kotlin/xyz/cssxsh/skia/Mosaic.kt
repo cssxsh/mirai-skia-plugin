@@ -42,6 +42,37 @@ public sealed class MosaicOption {
      * @param side 边长
      */
     public data class Hexagon(var side: Int = 10) : MosaicOption() {
+        private fun up(bitmap: Bitmap, x: Int, y: Int, width: Int, height: Int) {
+            val left = bitmap.getColor(x, y)
+            val right = bitmap.getColor(
+                (x + width).coerceAtMost(bitmap.width - 1),
+                (y + height).coerceAtMost(bitmap.height - 1)
+            )
+            for (offset in 0 until width) {
+                val h = ((side - offset) * 3.0.pow(0.5)).toInt().coerceAtMost(height).coerceAtLeast(0)
+                if (h > 0) {
+                    bitmap.erase(left, IRect.makeXYWH(x + offset, y, 1, h))
+                }
+                if (h < height) {
+                    bitmap.erase(right, IRect.makeXYWH(x + offset, y + h, 1, height - h))
+                }
+            }
+        }
+
+        private fun down(bitmap: Bitmap, x: Int, y: Int, width: Int, height: Int) {
+            val left = bitmap.getColor(x, (y + height).coerceAtMost(bitmap.height - 1))
+            val right = bitmap.getColor((x + width).coerceAtMost(bitmap.width - 1), y)
+            for (offset in 0 until width) {
+                val h = ((side - offset) * 3.0.pow(0.5)).toInt().coerceAtMost(height).coerceAtLeast(0)
+                if (h > 0) {
+                    bitmap.erase(left, IRect.makeXYWH(x + offset, y + height - h, 1, h))
+                }
+                if (h < height) {
+                    bitmap.erase(right, IRect.makeXYWH(x + offset, y, 1, height - h))
+                }
+            }
+        }
+
         override fun convert(bitmap: Bitmap) {
             val width = (side * 1.5).toInt()
             val height = (side * 0.5 * 3.0.pow(0.5)).toInt()
@@ -50,35 +81,8 @@ public sealed class MosaicOption {
             for (x in 0 until bitmap.width step width) {
                 for (y in 0 until bitmap.height step height) {
                     when (case) {
-                        0, 2 -> {
-                            val left = bitmap.getColor(x, y)
-                            val right = bitmap.getColor(
-                                (x + width).coerceAtMost(bitmap.width - 1),
-                                (y + height).coerceAtMost(bitmap.height - 1)
-                            )
-                            for (offset in 0 until width) {
-                                val h = ((side - offset) * 3.0.pow(0.5)).toInt().coerceAtMost(height).coerceAtLeast(0)
-                                if (h > 0) {
-                                    bitmap.erase(left, IRect.makeXYWH(x + offset, y, 1, h))
-                                }
-                                if (h < height) {
-                                    bitmap.erase(right, IRect.makeXYWH(x + offset, y + h, 1, height - h))
-                                }
-                            }
-                        }
-                        1, 3 -> {
-                            val left = bitmap.getColor(x, (y + height).coerceAtMost(bitmap.height - 1))
-                            val right = bitmap.getColor((x + width).coerceAtMost(bitmap.width - 1), y)
-                            for (offset in 0 until width) {
-                                val h = ((side - offset) * 3.0.pow(0.5)).toInt().coerceAtMost(height).coerceAtLeast(0)
-                                if (h > 0) {
-                                    bitmap.erase(left, IRect.makeXYWH(x + offset, y + height - h, 1, h))
-                                }
-                                if (h < height) {
-                                    bitmap.erase(right, IRect.makeXYWH(x + offset, y, 1, height - h))
-                                }
-                            }
-                        }
+                        0, 2 -> up(bitmap, x, y, width, height)
+                        1, 3 -> down(bitmap, x, y, width, height)
                     }
 
                     case = case xor 0x1

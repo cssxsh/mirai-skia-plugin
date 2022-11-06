@@ -67,7 +67,7 @@ internal var listener: (urlString: String) -> ProgressListener? = { null }
 
 internal suspend fun download(urlString: String, folder: File): File {
     val name = urlString.substringAfterLast('/').decodeURLPart()
-    val listener = listener("<${name}>下载中")
+    val listener = listener(name)
 
     val response = http.get(urlString) {
         onDownload(listener)

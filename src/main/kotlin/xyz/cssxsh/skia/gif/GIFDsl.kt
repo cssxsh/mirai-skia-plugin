@@ -20,6 +20,9 @@ internal fun Int.asRGBBytes(): ByteArray {
     )
 }
 
+/**
+ * 标记一些函数用于 GIF DSL
+ */
 @DslMarker
 public annotation class GIFDsl
 

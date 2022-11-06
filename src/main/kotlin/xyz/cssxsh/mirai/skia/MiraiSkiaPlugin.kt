@@ -1,5 +1,6 @@
 package xyz.cssxsh.mirai.skia
 
+import io.ktor.client.content.*
 import kotlinx.coroutines.*
 import net.mamoe.mirai.console.MiraiConsole
 import net.mamoe.mirai.console.extension.*
@@ -28,17 +29,22 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     internal val process: Closeable? by lazy {
         try {
             val impl = MiraiConsole.newProcessProgress()
-            listener = listener@{ message ->
+            listener = { file ->
                 launch {
-                    impl.updateText(message)
+                    impl.updateText("<${file}> 下载中")
                 }
 
-                return@listener { total, contentLength ->
+                val progress: ProgressListener = { total, contentLength ->
                     if (contentLength != 0L) {
                         impl.update(total, contentLength)
+                        if (total == contentLength) {
+                            impl.updateText("<${file}> 下载完成")
+                        }
                         impl.rerender()
                     }
                 }
+
+                progress
             }
             impl
         } catch (_: Throwable) {
