@@ -358,7 +358,7 @@ public const val ZZKIA_ORIGIN: String = "xyz.cssxsh.skia.zzkia"
 public fun zzkia(text: String): Surface {
     val origin = try {
         Image.makeFromEncoded(File(System.getProperty(ZZKIA_ORIGIN, "zzkia.jpg")).readBytes())
-    } catch (cause: Exception) {
+    } catch (cause: IOException) {
         throw IllegalStateException(
             "please download https://cdn.jsdelivr.net/gh/dcalsky/bbq/zzkia/images/4.jpg , file path set property $ZZKIA_ORIGIN",
             cause
