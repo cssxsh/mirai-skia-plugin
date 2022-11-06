@@ -16,6 +16,9 @@ public object Library {
     private var copyDir: File? = null
     internal var loaded = AtomicBoolean(false)
 
+    /**
+     * 尝试加载 GIF_LIBRARY
+     */
     public fun staticLoad() {
         if (loaded.compareAndSet(false, true)) {
             load()

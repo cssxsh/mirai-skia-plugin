@@ -3,6 +3,9 @@ package xyz.cssxsh.skia.gif
 import org.jetbrains.skia.*
 import java.nio.*
 
+/**
+ * GIF Image Descriptor 写入器
+ */
 public object ImageDescriptor {
     private const val SEPARATOR = 0x002C
     private const val TERMINATOR = 0x0000
@@ -36,7 +39,15 @@ public object ImageDescriptor {
         }
     }
 
-    internal fun write(buffer: ByteBuffer, rect: IRect, table: ColorTable, local: Boolean, image: IntArray) {
+    /**
+     * 帧数据写入
+     * @param buffer 写入的目标
+     * @param rect 显示的位置
+     * @param table 调色板
+     * @param local 为当前帧写入调色板
+     * @param image 像素数据
+     */
+    public fun write(buffer: ByteBuffer, rect: IRect, table: ColorTable, local: Boolean, image: IntArray) {
         // Not Interlaced Images
         var flags = 0x00
 

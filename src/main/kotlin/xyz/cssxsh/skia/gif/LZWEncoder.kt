@@ -2,6 +2,11 @@ package xyz.cssxsh.skia.gif
 
 import java.util.*
 
+/**
+ * LZW 编码器
+ * @param colors 调色板
+ * @param image 颜色数据
+ */
 public class LZWEncoder(private val colors: ColorTable, private val image: IntArray) {
     internal companion object {
         val CLEAR_CODE = listOf(-1)
@@ -21,6 +26,10 @@ public class LZWEncoder(private val colors: ColorTable, private val image: IntAr
         resetCodeTableAndCodeSize()
     }
 
+    /**
+     * 编码
+     * @return 大小和压缩数据
+     */
     public fun encode(): Pair<Int, ByteArray> {
         writeCode(table.getValue(CLEAR_CODE))
         for (rgb in image) {

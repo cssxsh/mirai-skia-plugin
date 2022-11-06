@@ -3,6 +3,9 @@ package xyz.cssxsh.skia.gif
 import org.jetbrains.skia.*
 import java.nio.*
 
+/**
+ * GIF Graphic Control Extension Info 写入器
+ */
 public object GraphicControlExtension {
     private const val INTRODUCER = 0x21
     private const val LABEL = 0xF9
@@ -24,6 +27,14 @@ public object GraphicControlExtension {
         buffer.put(TERMINATOR.asUnsignedByte())
     }
 
+    /**
+     * 写入
+     * @param buffer 写入的目标
+     * @param disposalMethod 切换方法
+     * @param userInput 用户输入
+     * @param transparencyIndex 透明位index
+     * @param millisecond 延迟
+     */
     public fun write(
         buffer: ByteBuffer,
         disposalMethod: AnimationDisposalMode,

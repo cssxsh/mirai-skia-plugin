@@ -2,6 +2,13 @@ package xyz.cssxsh.skia.gif
 
 import java.nio.*
 
+/**
+ * 调色板
+ * @param colors 颜色
+ * @param sort 是否已排序
+ * @param transparency 透明颜色序号
+ * @param background 背景颜色序号
+ */
 public class ColorTable(
     public val colors: IntArray,
     public val sort: Boolean,
@@ -18,6 +25,10 @@ public class ColorTable(
         check(colors.capacity() != -1) { "Color Table Too Large" }
     }
 
+    /**
+     * 写入
+     * @param buffer 写入的目标
+     */
     public fun write(buffer: ByteBuffer) {
         for (color in colors) {
             buffer.put(color.asRGBBytes())
@@ -25,8 +36,14 @@ public class ColorTable(
         buffer.put(ByteArray((colors.capacity() - colors.size) * 3))
     }
 
+    /**
+     * 是否存在(颜色不为空)
+     */
     public fun exists(): Boolean = colors.isNotEmpty()
 
+    /**
+     * GIF 颜色数量位对应值
+     */
     public fun size(): Int = when (colors.size) {
         in 129..256 -> 0x07
         in 65..128 -> 0x06

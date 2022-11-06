@@ -16,6 +16,12 @@ public class OctTreeQuantizer {
     private var inIndex = 0
     private val nodeList = arrayOfNulls<Node>(8)
 
+    /**
+     * 量化处理
+     * @param bitmap 位图数据
+     * @param maxColorCount 最大颜色数量
+     * @return RGB调色板
+     */
     public fun quantize(bitmap: Bitmap, maxColorCount: Int = 256): IntArray {
         val node = createNode(0)
         for (x in 0 until bitmap.width) {

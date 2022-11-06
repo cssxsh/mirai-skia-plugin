@@ -35,30 +35,69 @@ public class Frame internal constructor(ptr: NativePointer) : Native(ptr), Close
             Library.staticLoad()
         }
 
+        /**
+         * 从 GIF 像素创建帧
+         * @param width 宽
+         * @param height 高
+         * @param pixels 像素数据
+         * @param transparent 透明像素Index
+         */
         public fun fromIndexedPixels(width: Int, height: Int, pixels: Data, transparent: Int?): Frame {
             return Frame(ptr = fromIndexedPixels(width, height, pixels._ptr, transparent ?: -1))
         }
 
+        /**
+         * 从 GIF 像素创建帧
+         * @param width 宽
+         * @param height 高
+         * @param pixels 像素数据
+         * @param palette 颜色盘
+         * @param transparent 透明像素Index
+         */
         public fun fromPalettePixels(width: Int, height: Int, pixels: Data, palette: Data, transparent: Int?): Frame {
             return Frame(ptr = fromPalettePixels(width, height, pixels._ptr, palette._ptr, transparent ?: -1))
         }
 
+        /**
+         * 从 RGB 像素创建帧
+         * @param pixels 像素数据
+         * @param width 宽
+         * @param height 高
+         */
         public fun fromRGBSpeed(pixels: Data, width: Int, height: Int, speed: Int = 0): Frame {
             return Frame(ptr = fromRGBSpeed(width, height, pixels._ptr, speed))
         }
 
+        /**
+         * 从 RGBA 像素创建帧
+         * @param pixels 像素数据
+         * @param width 宽
+         * @param height 高
+         */
         public fun fromRGBASpeed(pixels: Data, width: Int, height: Int, speed: Int = 0): Frame {
             return Frame(ptr = fromRGBASpeed(width, height, pixels._ptr, speed))
         }
 
+        /**
+         * 从图片创建帧
+         * @param image 图片
+         */
         public fun fromImage(image: Image, speed: Int = 1): Frame {
             return Frame(ptr = fromImage(image._ptr, speed))
         }
 
+        /**
+         * 从位图创建帧
+         * @param bitmap 位图
+         */
         public fun fromBitmap(bitmap: Bitmap, speed: Int = 1): Frame {
             return Frame(ptr = fromBitmap(bitmap._ptr, speed))
         }
 
+        /**
+         * 从像素图创建帧
+         * @param pixmap 像素图
+         */
         public fun fromPixmap(pixmap: Pixmap, speed: Int = 1): Frame {
             return Frame(ptr = fromPixmap(pixmap._ptr, speed))
         }

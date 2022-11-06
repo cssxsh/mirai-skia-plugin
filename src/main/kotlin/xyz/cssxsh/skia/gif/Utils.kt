@@ -20,6 +20,13 @@ internal fun Int.asRGBBytes(): ByteArray {
     )
 }
 
+@DslMarker
+public annotation class GIFDsl
+
+/**
+ * GIF DSL
+ */
+@GIFDsl
 public fun gif(width: Int, height: Int, block: GIFBuilder.() -> Unit): Data {
     return GIFBuilder(width, height)
         .apply(block)

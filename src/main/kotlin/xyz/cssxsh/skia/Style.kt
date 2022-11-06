@@ -5,6 +5,14 @@ package xyz.cssxsh.skia
 import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.*
 
+/**
+ * 生成 LobPoly 风格 位图
+ * @param variance 方差 [0.0, 1.0]
+ * @param cellSize 单元格大小 [0.0, 1.0]
+ * @param depth 深度
+ * @param dither 抖动
+ * @param seed 种子
+ */
 public fun Bitmap.generateLowPoly(
     variance: Double,
     cellSize: Int,

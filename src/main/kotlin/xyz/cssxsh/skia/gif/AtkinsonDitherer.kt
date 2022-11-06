@@ -2,6 +2,9 @@ package xyz.cssxsh.skia.gif
 
 import org.jetbrains.skia.*
 
+/**
+ * Atkinson 算法 抖动器
+ */
 public object AtkinsonDitherer {
     private val DISTRIBUTION: List<ErrorComponent> = listOf(
         ErrorComponent(1, 0, 1 / 8.0),
@@ -39,6 +42,12 @@ public object AtkinsonDitherer {
 
     private fun Color.nearest(): Int = red * red + green * green + blue * blue
 
+    /**
+     * 计算抖动
+     * @param bitmap 位图
+     * @param table 调色板
+     * @return 抖动结果
+     */
     public fun dither(bitmap: Bitmap, table: IntArray): IntArray {
         val width = bitmap.width
         val height = bitmap.height

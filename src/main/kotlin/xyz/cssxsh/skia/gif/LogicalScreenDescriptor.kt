@@ -2,7 +2,10 @@ package xyz.cssxsh.skia.gif
 
 import java.nio.*
 
-internal object LogicalScreenDescriptor {
+/**
+ * GIF Logical ScreenDescriptor 写入器
+ */
+public object LogicalScreenDescriptor {
 
     private fun block(
         buffer: ByteBuffer,
@@ -19,7 +22,15 @@ internal object LogicalScreenDescriptor {
         buffer.put(pixelAspectRatio)
     }
 
-    fun write(
+    /**
+     * 帧数据写入
+     * @param buffer 写入的目标
+     * @param width 宽
+     * @param height 高
+     * @param table 调色板
+     * @param ratio 像素宽高比
+     */
+    public fun write(
         buffer: ByteBuffer,
         width: Int,
         height: Int,

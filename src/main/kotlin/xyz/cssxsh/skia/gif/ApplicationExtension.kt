@@ -2,6 +2,9 @@ package xyz.cssxsh.skia.gif
 
 import java.nio.*
 
+/**
+ * GIF Application Extension Info 写入器
+ */
 public object ApplicationExtension {
     private const val INTRODUCER = 0x21
     private const val LABEL = 0xFF
@@ -33,6 +36,11 @@ public object ApplicationExtension {
         )
     }
 
+    /**
+     * 循环
+     * @param buffer 写入的目标
+     * @param count 循环次数
+     */
     public fun loop(buffer: ByteBuffer, count: Int) {
         write(
             buffer = buffer,
@@ -46,6 +54,11 @@ public object ApplicationExtension {
         )
     }
 
+    /**
+     * 启用缓存
+     * @param buffer 写入的目标
+     * @param capacity 缓存块容量
+     */
     public fun buffering(buffer: ByteBuffer, capacity: Int) {
         write(
             buffer = buffer,
@@ -61,6 +74,11 @@ public object ApplicationExtension {
         )
     }
 
+    /**
+     * 简介信息
+     * @param buffer 写入的目标
+     * @param data 简介数据
+     */
     public fun profile(buffer: ByteBuffer, data: ByteArray) {
         write(
             buffer = buffer,

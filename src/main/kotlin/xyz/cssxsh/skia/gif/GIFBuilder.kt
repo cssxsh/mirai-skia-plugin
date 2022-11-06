@@ -4,6 +4,11 @@ import org.jetbrains.skia.*
 import org.jetbrains.skia.impl.*
 import java.nio.*
 
+/**
+ * GIF 构建器
+ * @param width 宽
+ * @param height 高
+ */
 public class GIFBuilder(public val width: Int, public val height: Int) {
     public companion object {
         internal const val GIF_HEADER = "GIF89a"
@@ -14,45 +19,69 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
 
     private fun trailer(buffer: ByteBuffer) = buffer.put(GIF_TRAILER.toByteArray(Charsets.US_ASCII))
 
+    /**
+     * [ByteBuffer.capacity]
+     */
     public var capacity: Int = 1 shl 23
 
     /**
      * [ByteBuffer.capacity]
      */
+    @GIFDsl
     public fun capacity(total: Int): GIFBuilder = apply { capacity = total }
 
+    /**
+     * Netscape Looping Application Extension, 0 is infinite times
+     * @see [ApplicationExtension.loop]
+     */
     public var loop: Int = 0
 
     /**
      * Netscape Looping Application Extension, 0 is infinite times
      * @see [ApplicationExtension.loop]
      */
+    @GIFDsl
     public fun loop(count: Int): GIFBuilder = apply { loop = count }
 
+    /**
+     * Netscape Buffering Application Extension
+     * @see [ApplicationExtension.buffering]
+     */
     public var buffering: Int = 0
 
     /**
      * Netscape Buffering Application Extension
      * @see [ApplicationExtension.buffering]
      */
+    @GIFDsl
     public fun buffering(open: Boolean): GIFBuilder = apply { buffering = if (open) 0x0001_0000 else 0x0000_0000 }
 
+    /**
+     * Pixel Aspect Ratio
+     * @see [LogicalScreenDescriptor.write]
+     */
     public var ratio: Int = 0
 
     /**
      * Pixel Aspect Ratio
      * @see [LogicalScreenDescriptor.write]
      */
+    @GIFDsl
     public fun ratio(size: Int): GIFBuilder = apply {
         ratio = size
     }
 
+    /**
+     * GlobalColorTable
+     * @see [OctTreeQuantizer.quantize]
+     */
     public var global: ColorTable = ColorTable.Empty
 
     /**
      * GlobalColorTable
      * @see [OctTreeQuantizer.quantize]
      */
+    @GIFDsl
     public fun table(bitmap: Bitmap): GIFBuilder = apply {
         global = if (bitmap.computeIsOpaque()) {
             ColorTable(OctTreeQuantizer().quantize(bitmap, 256), true, null)
@@ -64,10 +93,14 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * GlobalColorTable
      */
+    @GIFDsl
     public fun table(value: ColorTable): GIFBuilder = apply {
         global = value
     }
 
+    /**
+     * GlobalFrameOptions
+     */
     public var options: AnimationFrameInfo = AnimationFrameInfo(
         requiredFrame = -1,
         duration = 1000,
@@ -83,12 +116,23 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * GlobalFrameOptions
      */
+    @GIFDsl
     public fun options(block: AnimationFrameInfo.() -> Unit): GIFBuilder = apply {
         options.apply(block)
     }
 
+    /**
+     * 帧集合
+     */
     public var frames: MutableList<Triple<Bitmap, ColorTable, AnimationFrameInfo>> = ArrayList()
 
+    /**
+     * 写入帧
+     * @param bitmap 源位图
+     * @param colors 调色板
+     * @param block 帧信息DSL
+     */
+    @GIFDsl
     public fun frame(
         bitmap: Bitmap,
         colors: ColorTable = ColorTable.Empty,
@@ -98,6 +142,13 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         frames.add(Triple(bitmap, colors, options.withFrameRect(rect).withAlphaType(bitmap.alphaType).apply(block)))
     }
 
+    /**
+     * 写入帧
+     * @param bitmap 源位图
+     * @param colors 调色板
+     * @param info 帧信息
+     */
+    @GIFDsl
     public fun frame(
         bitmap: Bitmap,
         colors: ColorTable = ColorTable.Empty,
@@ -106,6 +157,10 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         frames.add(Triple(bitmap, colors, info))
     }
 
+    /**
+     * 构建到 buffer
+     * @param buffer 写入的目标
+     */
     public fun build(buffer: ByteBuffer) {
         buffer.order(ByteOrder.LITTLE_ENDIAN)
 
@@ -136,6 +191,9 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         trailer(buffer)
     }
 
+    /**
+     * 构建为数据
+     */
     public fun data(): Data {
         val data = Data.makeUninitialized(capacity)
         val buffer = BufferUtil.getByteBufferFromPointer(data.writableData(), capacity)
@@ -144,6 +202,9 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
         return data.makeSubset(0, buffer.position())
     }
 
+    /**
+     * 构建为 bytes
+     */
     public fun build(): ByteArray {
         val buffer = ByteBuffer.allocate(capacity)
         build(buffer = buffer)

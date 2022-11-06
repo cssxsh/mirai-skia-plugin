@@ -30,7 +30,7 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
     }
 
     /**
-     * 写入图片到帧
+     * 写入图片作为帧
      * @param image 图片
      * @param mills 延时
      * @param disposal 切换模式
@@ -40,7 +40,7 @@ public class Encoder internal constructor(ptr: NativePointer) : Native(ptr), Clo
     }
 
     /**
-     * 写入位图到帧
+     * 写入位图作为帧
      * @param bitmap 位图
      * @param mills 延时
      * @param disposal 切换模式
