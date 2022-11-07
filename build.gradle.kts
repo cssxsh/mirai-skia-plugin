@@ -27,12 +27,12 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-okhttp:2.1.2") {
+    implementation("io.ktor:ktor-client-okhttp:2.1.3") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
     }
-    implementation("io.ktor:ktor-client-encoding:2.1.2") {
+    implementation("io.ktor:ktor-client-encoding:2.1.3") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "org.slf4j")
@@ -44,7 +44,7 @@ dependencies {
     }
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("org.tukaani:xz:1.9")
-    api("org.jetbrains.skiko:skiko-awt:0.7.34") {
+    api("org.jetbrains.skiko:skiko-awt:0.7.37") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
     }
