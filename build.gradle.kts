@@ -2,12 +2,12 @@ plugins {
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.20"
 
-    id("net.mamoe.mirai-console") version "2.13.0-RC2"
+    id("net.mamoe.mirai-console") version "2.13.0"
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.2.0-RC2"
+version = "1.2.0"
 
 mavenCentralPublish {
     useCentralS01()
@@ -50,12 +50,12 @@ dependencies {
     }
     // shadowLink("org.jetbrains.skiko:skiko-awt")
     implementation("org.jsoup:jsoup:1.15.3")
-    compileOnly("net.mamoe:mirai-core-utils:2.13.0-RC2")
+    compileOnly("net.mamoe:mirai-core-utils:2.13.0")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     //
     testImplementation(kotlin("test"))
     testImplementation("org.slf4j:slf4j-simple:2.0.3")
-    testImplementation("net.mamoe:mirai-logging-slf4j:2.13.0-RC2")
+    testImplementation("net.mamoe:mirai-logging-slf4j:2.13.0")
 }
 
 kotlin {
