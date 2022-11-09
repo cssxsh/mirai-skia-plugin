@@ -280,11 +280,20 @@ public suspend fun loadJNILibrary(folder: File) {
     with(folder.resolve(skiko)) {
         val version = folder.resolve("skia.version.txt")
         val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
+        val huawei = "https://repo.huaweicloud.com/repository/maven/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
         logger.debug { maven }
         if (version.exists().not() || version.readText() != SKIKO_VERSION) delete()
 
         if (exists().not()) {
-            val file = download(urlString = maven, folder = folder)
+            val file = try {
+                download(urlString = maven, folder = folder)
+            } catch (cause: IOException) {
+                try {
+                    download(urlString = huawei, folder = folder)
+                } catch (_: IOException) {
+                    throw cause
+                }
+            }
             val jar = JarFile(file)
 
             outputStream().use { output ->
@@ -318,10 +327,10 @@ public suspend fun loadJNILibrary(folder: File) {
         if (exists().not()) {
             try {
                 download(urlString = release, folder = folder)
-            } catch (cause: Exception) {
+            } catch (cause: IOException) {
                 try {
                     download(urlString = origin, folder = folder)
-                } catch (_: Exception) {
+                } catch (_: IOException) {
                     throw cause
                 }
             }

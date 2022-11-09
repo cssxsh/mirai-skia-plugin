@@ -19,7 +19,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.2.0",
+        version = "1.2.1",
     ) {
         author("cssxsh")
     }
@@ -28,6 +28,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     @OptIn(ConsoleExperimentalApi::class)
     internal val process: Closeable? by lazy {
         try {
+            check(SemVersion.parseRangeRequirement("> 2.13.0").test(MiraiConsole.version))
             val impl = MiraiConsole.newProcessProgress()
             listener = { file ->
                 launch {
@@ -52,6 +53,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
         }
     }
 
+    @PublishedApi
     internal val loadJob: Job = launch(start = CoroutineStart.LAZY) {
         checkPlatform()
         process
