@@ -22,6 +22,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * [ByteBuffer.capacity]
      */
+    @GIFDsl
     public var capacity: Int = 1 shl 23
 
     /**
@@ -34,6 +35,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * Netscape Looping Application Extension, 0 is infinite times
      * @see [ApplicationExtension.loop]
      */
+    @GIFDsl
     public var loop: Int = 0
 
     /**
@@ -47,6 +49,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * Netscape Buffering Application Extension
      * @see [ApplicationExtension.buffering]
      */
+    @GIFDsl
     public var buffering: Int = 0
 
     /**
@@ -60,6 +63,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * Pixel Aspect Ratio
      * @see [LogicalScreenDescriptor.write]
      */
+    @GIFDsl
     public var ratio: Int = 0
 
     /**
@@ -75,6 +79,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * GlobalColorTable
      * @see [OctTreeQuantizer.quantize]
      */
+    @GIFDsl
     public var global: ColorTable = ColorTable.Empty
 
     /**
@@ -101,6 +106,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * GlobalFrameOptions
      */
+    @GIFDsl
     public var options: AnimationFrameInfo = AnimationFrameInfo(
         requiredFrame = -1,
         duration = 1000,
@@ -124,6 +130,7 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
     /**
      * 帧集合
      */
+    @GIFDsl
     public var frames: MutableList<Triple<Bitmap, ColorTable, AnimationFrameInfo>> = ArrayList()
 
     /**
@@ -161,7 +168,8 @@ public class GIFBuilder(public val width: Int, public val height: Int) {
      * 构建到 buffer
      * @param buffer 写入的目标
      */
-    public fun build(buffer: ByteBuffer) {
+    @PublishedApi
+    internal fun build(buffer: ByteBuffer) {
         buffer.order(ByteOrder.LITTLE_ENDIAN)
 
         header(buffer)
