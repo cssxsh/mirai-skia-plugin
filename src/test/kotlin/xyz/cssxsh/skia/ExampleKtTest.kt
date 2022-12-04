@@ -18,6 +18,7 @@ internal class ExampleKtTest {
         fonts.mkdirs()
         System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
         val links = arrayOf(
+            "https://forum.freemdict.com/uploads/short-url/57rcFi1dOBZBbcQu6762Y776rVD.ttf",
             "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip",
             "https://github.com/googlefonts/noto-emoji/archive/refs/tags/v2.038.tar.gz",
             "https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z"

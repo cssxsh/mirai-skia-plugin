@@ -43,7 +43,7 @@ private val http = HttpClient(OkHttp) {
     engine {
         config {
             dns(object : Dns {
-                private val url = System.getProperty("xyz.cssxsh.mirai.skia.doh", "https://public.dns.iij.jp/dns-query")
+                private val url = System.getProperty("xyz.cssxsh.mirai.doh", "https://public.dns.iij.jp/dns-query")
                 private val doh = DnsOverHttps.Builder()
                     .client(okhttp3.OkHttpClient())
                     .url(url.toHttpUrl())
@@ -215,8 +215,8 @@ public val FontExtensions: Array<String> = arrayOf("ttf", "otf", "eot", "fon", "
  * 一些免费字体链接
  */
 public val FreeFontLinks: Array<String> = arrayOf(
-    "https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji_WindowsCompatible.ttf",
-//    "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip",
+    // NotoColorEmoji_WindowsCompatible.ttf
+    "https://forum.freemdict.com/uploads/short-url/57rcFi1dOBZBbcQu6762Y776rVD.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589379-方正书宋简体.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589357-方正仿宋简体.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589334-方正楷体简体.ttf",
