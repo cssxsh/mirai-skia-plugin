@@ -100,3 +100,7 @@ loadJNILibrary()
 | Termux (Android-ARM64) | 1.2.0  | 0.7.37 | 2.0.8 |
 
 暂时不支持 `Alpine Linux` 等 `MUSL/linux` 系统, 你可以关注 [![issue-11](https://shields.io/github/issues/detail/state/cssxsh/mirai-skia-plugin/11)](https://github.com/cssxsh/mirai-skia-plugin/issues/11)
+
+## [爱发电](https://afdian.net/@cssxsh)
+
+![afdian](example/sponsor/afdian.jpg)
