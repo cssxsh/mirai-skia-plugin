@@ -66,17 +66,17 @@ private val http = HttpClient(OkHttp) {
 internal var listener: (urlString: String) -> ProgressListener? = { null }
 
 internal suspend fun download(urlString: String, folder: File): File {
-    val name = urlString.substringAfterLast('/').decodeURLPart()
+    var name = urlString.substringAfterLast('/').decodeURLPart()
     val listener = listener(name)
 
     val response = http.get(urlString) {
         onDownload(listener)
     }
-    val relative = response.headers[HttpHeaders.ContentDisposition]
+    name = response.headers[HttpHeaders.ContentDisposition]
         ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
         ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
 
-    val file = folder.resolve(relative)
+    val file = folder.resolve(name)
 
     if (file.isFile && response.contentLength() == file.length()) {
         logger.info { "文件 ${file.name} 已存在，跳过下载" }

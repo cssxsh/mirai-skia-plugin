@@ -31,18 +31,14 @@ public object MiraiSkiaPlugin : KotlinPlugin(
             check(SemVersion.parseRangeRequirement("> 2.13.0").test(MiraiConsole.version))
             val impl = MiraiConsole.newProcessProgress()
             listener = { file ->
-                launch {
-                    impl.updateText("<${file}> 下载中")
-                }
-
                 val progress: ProgressListener = { total, contentLength ->
-                    if (contentLength != 0L) {
+                    if (total >= contentLength) {
+                        impl.updateText("<${file}> 下载完成")
+                    } else {
+                        impl.updateText("<${file}> 下载中")
                         impl.update(total, contentLength)
-                        if (total == contentLength) {
-                            impl.updateText("<${file}> 下载完成")
-                        }
-                        impl.rerender()
                     }
+                    impl.rerender()
                 }
 
                 progress
