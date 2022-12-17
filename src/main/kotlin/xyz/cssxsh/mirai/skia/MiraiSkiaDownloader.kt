@@ -240,7 +240,7 @@ private val SKIKO_VERSION: String by lazy {
 }
 
 private val GIF_RELEASE: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.gif.release", "https://download.fastgit.org/cssxsh/gif-jni")
+    System.getProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
 }
 
 private val GIF_VERSION: String by lazy {
@@ -320,7 +320,7 @@ public suspend fun loadJNILibrary(folder: File) {
     with(folder.resolve(gif)) {
         val version = folder.resolve("gif.version.txt")
         val release = "$GIF_RELEASE/releases/download/v$GIF_VERSION/$gif"
-        val origin = "https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif"
+        val proxy = "https://ghproxy.com/https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif"
         logger.debug { release }
         if (version.exists() && version.readText() != GIF_VERSION) delete()
 
@@ -329,7 +329,7 @@ public suspend fun loadJNILibrary(folder: File) {
                 download(urlString = release, folder = folder)
             } catch (cause: IOException) {
                 try {
-                    download(urlString = origin, folder = folder)
+                    download(urlString = proxy, folder = folder)
                 } catch (_: IOException) {
                     throw cause
                 }
