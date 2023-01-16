@@ -1,7 +1,9 @@
 package xyz.cssxsh.skia
 
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import org.jetbrains.skia.*
+import org.jetbrains.skia.paragraph.*
 import org.jetbrains.skia.svg.*
 import org.jetbrains.skiko.*
 import org.junit.jupiter.api.*
@@ -147,6 +149,49 @@ internal class ExampleKtTest {
         val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
 
         val file = File("./run/tank.png")
+        file.writeBytes(data.bytes)
+    }
+
+    @Test
+    fun `utf-16`() {
+        val test = "天网开发组"
+
+        val surface = Surface.makeRasterN32Premul(600, 300)
+        val fonts = FontCollection()
+            .setDynamicFontManager(FontUtils.provider)
+            .setDefaultFontManager(FontMgr.default)
+        val default = ParagraphStyle()
+        val paragraph = ParagraphBuilder(default, fonts)
+        val bytes = test.toByteArray(Charsets.UTF_32)
+        for (index in bytes.indices step 4) {
+            val a = bytes[index + 0].toInt() and 0xFF
+            val r = bytes[index + 1].toInt() and 0xFF
+            val g = bytes[index + 2].toInt() and 0xFF
+            val b = bytes[index + 3].toInt() and 0xFF
+
+            val color = Color.makeARGB(
+                a = a or r or b or g,
+                r = if (r == 0) g xor b else r xor 0xFF,
+                g = g xor 0xFF,
+                b = b xor 0xFF,
+            )
+            println("${test[index / 4]} ${color.toUInt().toString(16)}")
+            val style = TextStyle()
+                .setFontSize(100F)
+                .setColor(color)
+            paragraph
+                .pushStyle(style)
+                .addText(test[index / 4].toString())
+        }
+
+        paragraph.build()
+            .layout(500F)
+            .paint(surface.canvas, 50F, 50F)
+
+        val image = surface.makeImageSnapshot()
+        val data = image.encodeToData() ?: throw IllegalStateException("encode null.")
+
+        val file = File("./run/UTF-16.png")
         file.writeBytes(data.bytes)
     }
 }
