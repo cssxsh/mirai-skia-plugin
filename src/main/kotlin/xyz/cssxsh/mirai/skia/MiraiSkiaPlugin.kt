@@ -2,7 +2,7 @@ package xyz.cssxsh.mirai.skia
 
 import io.ktor.client.content.*
 import kotlinx.coroutines.*
-import net.mamoe.mirai.console.MiraiConsole
+import net.mamoe.mirai.console.*
 import net.mamoe.mirai.console.extension.*
 import net.mamoe.mirai.console.plugin.jvm.*
 import net.mamoe.mirai.console.plugin.*
@@ -19,7 +19,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-skia-plugin",
         name = "mirai-skia-plugin",
-        version = "1.2.3",
+        version = "1.2.4",
     ) {
         author("cssxsh")
     }

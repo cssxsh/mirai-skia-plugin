@@ -2,12 +2,12 @@ plugins {
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.serialization") version "1.7.22"
 
-    id("net.mamoe.mirai-console") version "2.13.2"
+    id("net.mamoe.mirai-console") version "2.14.0-RC"
     id("me.him188.maven-central-publish") version "1.0.0-dev-3"
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.2.3"
+version = "1.2.4"
 
 mavenCentralPublish {
     useCentralS01()
@@ -34,19 +34,18 @@ dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     testImplementation(kotlin("test"))
     //
-    implementation(platform("net.mamoe:mirai-bom:2.13.2"))
+    implementation(platform("net.mamoe:mirai-bom:2.14.0-RC"))
     compileOnly("net.mamoe:mirai-core-utils")
     compileOnly("net.mamoe:mirai-console-compiler-common")
-    testImplementation("net.mamoe:mirai-logging-slf4j")
     //
-    implementation(platform("io.ktor:ktor-bom:2.2.1"))
+    implementation(platform("io.ktor:ktor-bom:2.2.2"))
     implementation("io.ktor:ktor-client-okhttp")
     implementation("io.ktor:ktor-client-encoding")
+    //
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps")
     //
-    implementation(platform("org.slf4j:slf4j-parent:2.0.5"))
-    testImplementation("org.slf4j:slf4j-simple")
+    implementation(platform("org.slf4j:slf4j-parent:2.0.6"))
 }
 
 kotlin {
