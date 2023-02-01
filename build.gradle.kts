@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    api("org.jetbrains.skiko:skiko-awt:0.7.37")
+    api("org.jetbrains.skiko:skiko-awt:0.7.50")
     implementation("org.apache.commons:commons-compress:1.21")
     implementation("org.tukaani:xz:1.9")
     implementation("org.jsoup:jsoup:1.15.3")
