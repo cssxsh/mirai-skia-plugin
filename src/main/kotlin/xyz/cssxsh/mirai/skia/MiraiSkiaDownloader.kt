@@ -49,9 +49,11 @@ private val http = HttpClient(OkHttp) {
                     .url(url.toHttpUrl())
                     .includeIPv6(true)
                     .build()
+                private val cn = listOf("repo.huaweicloud.com")
 
                 @Throws(java.net.UnknownHostException::class)
                 override fun lookup(hostname: String): List<java.net.InetAddress> {
+                    if (hostname in cn) return Dns.SYSTEM.lookup(hostname)
                     return try {
                         doh.lookup(hostname)
                     } catch (_: java.net.UnknownHostException) {
@@ -77,8 +79,9 @@ internal suspend fun download(urlString: String, folder: File): File {
         ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
 
     val file = folder.resolve(name)
+    val expect = response.contentLength()
 
-    if (file.isFile && response.contentLength() == file.length()) {
+    if (file.isFile && expect == file.length()) {
         logger.info { "文件 ${file.name} 已存在，跳过下载" }
     } else {
         file.delete()
@@ -87,6 +90,10 @@ internal suspend fun download(urlString: String, folder: File): File {
             val channel = response.bodyAsChannel()
 
             while (!channel.isClosedForRead) channel.copyTo(output)
+        }
+        val actual = file.length()
+        if (expect != null && actual != expect) {
+            logger.warning { "${file.name} 下载异常 expect: $expect actual: $actual" }
         }
     }
     return file
@@ -223,27 +230,32 @@ public val FreeFontLinks: Array<String> = arrayOf(
     "https://mirai.mamoe.net/assets/uploads/files/1666870589312-方正黑体简体.ttf"
 )
 
-private val SKIKO_MAVEN: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.skia.maven", "https://maven.pkg.jetbrains.space/public/p/compose/dev")
+internal val SKIKO_MAVEN: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skiko.maven")
+        ?: System.getProperty("xyz.cssxsh.mirai.skia.maven")
+        ?: "https://maven.pkg.jetbrains.space/public/p/compose/dev"
 }
 
-private val SKIKO_PACKAGE: String by lazy {
-    val name = when {
-        "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
-        else -> "skiko-awt-runtime-${hostId}"
-    }
-    System.getProperty("xyz.cssxsh.mirai.skia.package", name)
+internal val SKIKO_PACKAGE: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skiko.package")
+        ?: System.getProperty("xyz.cssxsh.mirai.skia.package")
+        ?: when {
+            "android" in hostId -> "skiko-android-runtime-${hostArch.id}"
+            else -> "skiko-awt-runtime-${hostId}"
+        }
 }
 
-private val SKIKO_VERSION: String by lazy {
-    System.getProperty("xyz.cssxsh.mirai.skia.version", Version.skiko)
+internal val SKIKO_VERSION: String by lazy {
+    System.getProperty("xyz.cssxsh.mirai.skiko.version")
+        ?: System.getProperty("xyz.cssxsh.mirai.skia.version")
+        ?: Version.skiko
 }
 
-private val GIF_RELEASE: String by lazy {
+internal val GIF_RELEASE: String by lazy {
     System.getProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
 }
 
-private val GIF_VERSION: String by lazy {
+internal val GIF_VERSION: String by lazy {
     System.getProperty("xyz.cssxsh.mirai.gif.version", xyz.cssxsh.gif.Version.gif)
 }
 
@@ -281,17 +293,17 @@ public suspend fun loadJNILibrary(folder: File) {
         val version = folder.resolve("skia.version.txt")
         val maven = "$SKIKO_MAVEN/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
         val huawei = "https://repo.huaweicloud.com/repository/maven/org/jetbrains/skiko/$SKIKO_PACKAGE/$SKIKO_VERSION/$SKIKO_PACKAGE-$SKIKO_VERSION.jar"
-        logger.debug { maven }
         if (version.exists().not() || version.readText() != SKIKO_VERSION) delete()
 
         if (exists().not()) {
             val file = try {
-                download(urlString = maven, folder = folder)
+                download(urlString = huawei, folder = folder)
             } catch (cause: IOException) {
+                logger.warning({ huawei }, cause)
                 try {
-                    download(urlString = huawei, folder = folder)
-                } catch (_: IOException) {
-                    throw cause
+                    download(urlString = maven, folder = folder)
+                } catch (io: IOException) {
+                    throw io
                 }
             }
             val jar = JarFile(file)
@@ -321,17 +333,17 @@ public suspend fun loadJNILibrary(folder: File) {
         val version = folder.resolve("gif.version.txt")
         val release = "$GIF_RELEASE/releases/download/v$GIF_VERSION/$gif"
         val proxy = "https://ghproxy.com/https://github.com/cssxsh/gif-jni/releases/download/v$GIF_VERSION/$gif"
-        logger.debug { release }
         if (version.exists() && version.readText() != GIF_VERSION) delete()
 
         if (exists().not()) {
             try {
-                download(urlString = release, folder = folder)
+                download(urlString = proxy, folder = folder)
             } catch (cause: IOException) {
+                logger.warning({ proxy }, cause)
                 try {
-                    download(urlString = proxy, folder = folder)
-                } catch (_: IOException) {
-                    throw cause
+                    download(urlString = release, folder = folder)
+                } catch (io: IOException) {
+                    throw io
                 }
             }
         }
