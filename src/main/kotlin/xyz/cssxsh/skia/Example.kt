@@ -109,8 +109,14 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
  * [5000choyen](https://github.com/yurafuca/5000choyen)
  */
 public fun choyen(top: String, bottom: String): Surface {
-    val sans = Font(FontUtils.matchFamilyStyle("Noto Sans SC", FontStyle.BOLD), 100F)
-    val serif = Font(FontUtils.matchFamilyStyle("Noto Serif SC", FontStyle.BOLD), 100F)
+    val sans = Font(
+        FontUtils.matchFamiliesStyle(arrayOf("Noto Sans SC", "FZHei-B01S", "MiSans"), FontStyle.BOLD),
+        100F
+    )
+    val serif = Font(
+        FontUtils.matchFamiliesStyle(arrayOf("Noto Serif SC", "FZKai-Z03S", "MiSans"), FontStyle.BOLD),
+        100F
+    )
     val red = TextLine.make(top, sans)
     val silver = TextLine.make(bottom, serif)
     val width = maxOf(red.textBlob!!.blockBounds.right + 70, silver.textBlob!!.blockBounds.right + 250).toInt()
@@ -371,8 +377,8 @@ public fun zzkia(text: String): Surface {
 
     val fonts = FontCollection()
         .setDynamicFontManager(FontUtils.provider)
-        .setDefaultFontManager(FontMgr.default)
-    val families = arrayOf("FZXS14")
+        .setDefaultFontManager(FontMgr.default, "FZXS14")
+    val families = arrayOf("FZXS14", "FZKai-Z03S")
 
     // context
     val context = ParagraphStyle().apply {

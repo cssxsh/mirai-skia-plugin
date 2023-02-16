@@ -20,6 +20,7 @@ internal class ExampleKtTest {
         fonts.mkdirs()
         System.setProperty("xyz.cssxsh.mirai.gif.release", "https://github.com/cssxsh/gif-jni")
         val links = arrayOf(
+            "https://raw.githubusercontent.com/dcalsky/bbq/master/fonts/FZXS14-ex.ttf",
             "https://forum.freemdict.com/uploads/short-url/57rcFi1dOBZBbcQu6762Y776rVD.ttf",
             "https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip",
             "https://github.com/googlefonts/noto-emoji/archive/refs/tags/v2.038.tar.gz",
@@ -159,7 +160,7 @@ internal class ExampleKtTest {
         val surface = Surface.makeRasterN32Premul(600, 300)
         val fonts = FontCollection()
             .setDynamicFontManager(FontUtils.provider)
-            .setDefaultFontManager(FontMgr.default)
+            .setDefaultFontManager(FontMgr.default, "FZXS14")
         val default = ParagraphStyle()
         val paragraph = ParagraphBuilder(default, fonts)
         val bytes = test.toByteArray(Charsets.UTF_32)
