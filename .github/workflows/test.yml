@@ -1,5 +1,11 @@
 name: Test
-on: [ push, pull_request ]
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   test:
@@ -38,3 +44,9 @@ jobs:
 
       - name: StyleUtilsTest
         run: ./gradlew test --tests "xyz.cssxsh.skia.StyleUtilsTest" --scan --info
+
+      - name: Upload Run Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: run-${{ matrix.os }}-result
+          path: run/*
