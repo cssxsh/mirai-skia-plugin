@@ -49,4 +49,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: run-${{ matrix.os }}-result
-          path: run/*
+          path: |
+            run/*
+            !run/fonts/*
