@@ -10,11 +10,14 @@ import java.util.concurrent.atomic.*
  * @see org.jetbrains.skiko.Library
  */
 public object Library {
-    internal const val GIF_LIBRARY_PATH_PROPERTY = "gif.library.path"
-    internal val cacheRoot = "${System.getProperty("user.home")}/.gif/"
+    @PublishedApi
+    internal const val GIF_LIBRARY_PATH_PROPERTY: String = "gif.library.path"
+    @PublishedApi
+    internal val cacheRoot: String = "${System.getProperty("user.home")}/.gif/"
     private val libraryPath = System.getProperty(GIF_LIBRARY_PATH_PROPERTY)
     private var copyDir: File? = null
-    internal var loaded = AtomicBoolean(false)
+    @PublishedApi
+    internal var loaded: AtomicBoolean = AtomicBoolean(false)
 
     /**
      * 尝试加载 GIF_LIBRARY
@@ -30,7 +33,7 @@ public object Library {
             System.load(library.absolutePath)
         } catch (e: UnsatisfiedLinkError) {
             if (e.message?.contains("already loaded in another classloader") == true) {
-                copyDir = Files.createTempDirectory("skiko").toFile()
+                copyDir = Files.createTempDirectory("gif").toFile()
                 val tempFile = copyDir!!.resolve(library.name)
                 Files.copy(library.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
                 tempFile.deleteOnExit()

@@ -81,7 +81,7 @@ loadJNILibrary()
 ### MCL 指令安装
 
 **请确认 mcl.jar 的版本是 2.1.0+**  
-`./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel maven-stable --type plugin`
+`./mcl --update-package xyz.cssxsh.mirai:mirai-skia-plugin --channel maven-stable --type plugins`
 
 ### 手动安装
 
