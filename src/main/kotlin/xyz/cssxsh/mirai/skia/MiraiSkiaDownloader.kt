@@ -194,7 +194,7 @@ public fun unpack(pack: File, folder: File) {
 public fun loadTypeface(folder: File) {
     for (file in folder.listFiles() ?: return) {
         try {
-            when (file.extension) {
+            when (file.extension.lowercase()) {
                 "ttf", "otf", "eot", "fon", "font", "woff", "woff2" -> FontUtils.loadTypeface(path = file.path)
                 "ttc" -> {
                     val count = file.inputStream().use { input ->
