@@ -69,6 +69,7 @@ internal var listener: (urlString: String) -> ProgressListener? = { null }
 
 internal suspend fun download(urlString: String, folder: File): File {
     var name = urlString.substringAfterLast('/').decodeURLPart()
+        .replace("""\d{13}-""".toRegex(), "")
     val listener = listener(name)
 
     val response = http.get(urlString) {
@@ -111,7 +112,7 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
         Files.createTempDirectory("skia")
             .toFile()
     }
-
+    temp.deleteOnExit()
     folder.mkdirs()
 
     for (link in links) {
@@ -125,6 +126,42 @@ public suspend fun downloadTypeface(folder: File, vararg links: String) {
     for (pack in downloaded) runInterruptible(Dispatchers.IO) {
         unpack(pack, folder)
     }
+}
+
+@JvmSynthetic
+public suspend fun downloadNotoEmoji(folder: File) {
+    val temp = runInterruptible(Dispatchers.IO) {
+        Files.createTempDirectory("skia")
+            .toFile()
+    }
+    temp.deleteOnExit()
+    folder.mkdirs()
+
+    val link = "https://mirrors.tuna.tsinghua.edu.cn/github-release/googlefonts/noto-emoji/LatestRelease/repo-snapshot.tar.gz"
+
+    val pack = try {
+        download(urlString = link, folder = temp)
+    } catch (cause: Exception) {
+        logger.warning({ "字体下载失败, $link" }, cause)
+        return
+    }
+    pack.inputStream()
+        .buffered()
+        .let(::GzipCompressorInputStream)
+        .let(::TarArchiveInputStream)
+        .use { input ->
+            while (true) {
+                val entry = input.nextTarEntry ?: break
+                if (input.canReadEntryData(entry).not()) continue
+                if (entry.name.endsWith("NotoColorEmoji_WindowsCompatible.ttf").not()) continue
+                folder.mkdirs()
+                val target = folder.resolve("NotoColorEmoji_WindowsCompatible.ttf")
+                target.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+                target.setLastModified(entry.modTime.time)
+            }
+        }
 }
 
 /**
@@ -223,7 +260,6 @@ public val FontExtensions: Array<String> = arrayOf("ttf", "otf", "eot", "fon", "
  */
 public val FreeFontLinks: Array<String> = arrayOf(
     // "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji_WindowsCompatible.ttf",
-    "https://www.nicolesharp.net/fonts/google/NotoColorEmoji_WindowsCompatible.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589379-方正书宋简体.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589357-方正仿宋简体.ttf",
     "https://mirai.mamoe.net/assets/uploads/files/1666870589334-方正楷体简体.ttf",

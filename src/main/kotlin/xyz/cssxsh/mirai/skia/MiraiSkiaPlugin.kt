@@ -63,6 +63,7 @@ public object MiraiSkiaPlugin : KotlinPlugin(
             val fonts = resolveDataFile("fonts")
             if (fonts.list().isNullOrEmpty()) {
                 downloadTypeface(folder = fonts, links = FreeFontLinks)
+                downloadNotoEmoji(folder = fonts)
             }
         } finally {
             listener = { null }
