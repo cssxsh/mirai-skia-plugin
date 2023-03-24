@@ -100,12 +100,12 @@ loadJNILibrary()
 
 |        OS/Arch         | Plugin | Skiko  |  Gif  |
 |:----------------------:|:------:|:------:|:-----:|
-|     Windows-10-X64     | 1.3.0  | 0.7.50 | 2.0.8 |
-|     GNU/Linux-X64      | 1.3.0  | 0.7.50 | 2.0.8 |
-|    GNU/Linux-ARM64     | 1.3.0  | 0.7.50 | 2.0.8 |
-|       MacOS-X64        | 1.3.0  | 0.7.50 | 2.0.8 |
-|      MacOS-ARM64       | 1.3.0  | 0.7.50 | 2.0.8 |
-| Termux (Android-ARM64) | 1.3.0  | 0.7.50 | 2.0.8 |
+|     Windows-10-X64     | 1.3.0  | 0.7.54 | 2.0.8 |
+|     GNU/Linux-X64      | 1.3.0  | 0.7.54 | 2.0.8 |
+|    GNU/Linux-ARM64     | 1.3.0  | 0.7.54 | 2.0.8 |
+|       MacOS-X64        | 1.3.0  | 0.7.54 | 2.0.8 |
+|      MacOS-ARM64       | 1.3.0  | 0.7.54 | 2.0.8 |
+| Termux (Android-ARM64) | 1.3.0  | 0.7.54 | 2.0.8 |
 
 暂时不支持 `Alpine Linux` 等 `MUSL/linux` 系统, 你可以关注 [![issue-11](https://shields.io/github/issues/detail/state/cssxsh/mirai-skia-plugin/11)](https://github.com/cssxsh/mirai-skia-plugin/issues/11)
 
