@@ -39,7 +39,8 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                             impl.updateText("<${file}> 下载完成")
                         }
                         else -> {
-                            impl.updateText("<${file}> 下载中")
+                            val percentage = (total * 10000 / contentLength).toDouble() / 100.0
+                            impl.updateText("<${file}> 下载中 ${percentage}%")
                             impl.update(total, contentLength)
                         }
                     }
