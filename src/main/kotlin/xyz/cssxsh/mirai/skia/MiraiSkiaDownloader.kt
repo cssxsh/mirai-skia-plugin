@@ -78,6 +78,7 @@ internal suspend fun download(urlString: String, folder: File): File {
     name = response.headers[HttpHeaders.ContentDisposition]
         ?.let { ContentDisposition.parse(it).parameter(ContentDisposition.Parameters.FileName) }
         ?: response.request.url.encodedPath.substringAfterLast('/').decodeURLPart()
+            .replace("""\d{13}-""".toRegex(), "")
 
     val file = folder.resolve(name)
     val expect = response.contentLength()
