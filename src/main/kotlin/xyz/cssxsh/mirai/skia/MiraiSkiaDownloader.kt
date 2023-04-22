@@ -87,7 +87,7 @@ internal suspend fun download(urlString: String, folder: File): File {
         logger.info { "文件 ${file.name} 已存在，跳过下载" }
     } else {
         file.delete()
-        logger.info { "文件 ${file.name} 开始下载" }
+        logger.info { "文件 ${file.name} 开始保存" }
         file.outputStream().use { output ->
             val channel = response.bodyAsChannel()
 

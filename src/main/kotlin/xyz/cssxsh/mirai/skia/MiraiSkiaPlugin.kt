@@ -94,6 +94,9 @@ public object MiraiSkiaPlugin : KotlinPlugin(
                     logger.warning { "可能缺少 ${version}, 请安装此版本 glibc" }
                 }
             }
+            if (message.orEmpty() == "Unknown arch x86") {
+                logger.warning { "本插件不支持 32 位 JAVA！！！" }
+            }
         }
         loadJob.start()
     }
