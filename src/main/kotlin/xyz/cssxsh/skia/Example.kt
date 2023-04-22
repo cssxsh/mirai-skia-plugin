@@ -11,7 +11,10 @@ import java.nio.file.*
  * 构造 PornPub Logo
  */
 public fun pornhub(porn: String = "Porn", hub: String = "Hub"): Surface {
-    val font = Font(FontUtils.matchArial(FontStyle.BOLD), 90F)
+    val font = Font(
+        typeface = FontUtils.matchFamiliesStyle(arrayOf("Arial", "Noto Serif SC", "黑体"), FontStyle.BOLD),
+        size = 90F
+    )
     val prefix = TextLine.make(porn, font)
     val suffix = TextLine.make(hub, font)
     val black = Paint().setARGB(0xFF, 0x00, 0x00, 0x00)
@@ -110,12 +113,12 @@ public fun petpet(face: Image, second: Double = 0.02): Data {
  */
 public fun choyen(top: String, bottom: String): Surface {
     val sans = Font(
-        FontUtils.matchFamiliesStyle(arrayOf("Noto Sans SC", "FZHei-B01S", "MiSans"), FontStyle.BOLD),
-        100F
+        typeface = FontUtils.matchFamiliesStyle(arrayOf("Noto Sans SC", "FZHei-B01S", "MiSans"), FontStyle.BOLD),
+        size = 100F
     )
     val serif = Font(
-        FontUtils.matchFamiliesStyle(arrayOf("Noto Serif SC", "FZKai-Z03S", "MiSans"), FontStyle.BOLD),
-        100F
+        typeface = FontUtils.matchFamiliesStyle(arrayOf("Noto Serif SC", "FZKai-Z03S", "MiSans"), FontStyle.BOLD),
+        size = 100F
     )
     val red = TextLine.make(top, sans)
     val silver = TextLine.make(bottom, serif)
