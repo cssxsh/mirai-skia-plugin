@@ -154,4 +154,9 @@ public object FontUtils {
      * Liberation Serif
      */
     public fun matchLiberationSerif(style: FontStyle): Typeface? = matchFamilyStyle("Liberation Serif", style)
+
+    /**
+     * Noto Color Emoji
+     */
+    public fun matchNotoColorEmoji(style: FontStyle): Typeface? = matchFamilyStyle("Noto Color Emoji", style)
 }
