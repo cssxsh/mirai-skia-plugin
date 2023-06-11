@@ -303,8 +303,8 @@ private const val ICU = "icudtl.dat"
  */
 public fun checkPlatform() {
     // Termux
-    if (hostOs == OS.Linux && "termux" in System.getProperty("user.dir")) {
-        logger.info { "change platform: $hostId to android-arm64" }
+    System.getenv("TERMUX_VERSION")?.let { version ->
+        logger.info { "change platform: $hostId to android-arm64, for termux $version" }
         try {
             val kt = Class.forName("org.jetbrains.skiko.OsArch_jvmKt")
             val delegate = kt.getDeclaredField("hostId\$delegate").apply { isAccessible = true }
