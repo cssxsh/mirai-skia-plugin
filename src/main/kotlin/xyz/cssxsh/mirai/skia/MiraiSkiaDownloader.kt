@@ -335,7 +335,7 @@ public suspend fun loadJNILibrary(folder: File) {
         if (exists().not()) {
             val file = try {
                 download(urlString = huawei, folder = folder)
-            } catch (cause: IOException) {
+            } catch (cause: ClientRequestException) {
                 logger.warning({ huawei }, cause)
                 try {
                     download(urlString = maven, folder = folder)
