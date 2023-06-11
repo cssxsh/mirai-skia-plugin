@@ -2,7 +2,7 @@ package xyz.cssxsh.gif
 
 import kotlinx.coroutines.*
 import org.jetbrains.skia.*
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import xyz.cssxsh.mirai.skia.*
 import xyz.cssxsh.skia.*
 import java.io.File
@@ -49,7 +49,6 @@ internal class EncoderTest {
 
                 encoder.writeImage(image, 20, AnimationDisposalMode.RESTORE_BG_COLOR)
             }
-
         }
     }
 

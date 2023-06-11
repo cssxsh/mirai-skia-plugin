@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.cssxsh.mirai"
-version = "1.3.1"
+version = "1.3.2"
 
 mavenCentralPublish {
     useCentralS01()
@@ -21,7 +21,6 @@ mavenCentralPublish {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
@@ -30,7 +29,7 @@ dependencies {
     api("org.jetbrains.skiko:skiko-awt:0.7.58")
     implementation("org.apache.commons:commons-compress:1.23.0")
     implementation("org.tukaani:xz:1.9")
-    implementation("org.jsoup:jsoup:1.15.4")
+    implementation("org.jsoup:jsoup:1.16.1")
     testImplementation(kotlin("test"))
     //
     implementation(platform("net.mamoe:mirai-bom:2.14.0"))

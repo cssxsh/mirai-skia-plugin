@@ -15,6 +15,7 @@ import kotlin.jvm.*
  */
 public object FontUtils {
 
+    @PublishedApi
     internal val instances: Sequence<FontMgr> = sequence {
         yield(provider)
         yield(FontMgr.default)

@@ -314,6 +314,7 @@ public fun checkPlatform() {
         } catch (_: Exception) {
             logger.warning { "修改 hostId 失败" }
         }
+        System.setProperty("xyz.cssxsh.mirai.skiko.version", "0.7.54")
     }
 }
 
