@@ -26,13 +26,13 @@ repositories {
 }
 
 dependencies {
-    api("org.jetbrains.skiko:skiko-awt:0.7.67")
+    api("org.jetbrains.skiko:skiko-awt:0.7.69")
     implementation("org.apache.commons:commons-compress:1.23.0")
     implementation("org.tukaani:xz:1.9")
     implementation("org.jsoup:jsoup:1.16.1")
     testImplementation(kotlin("test"))
     //
-    implementation(platform("net.mamoe:mirai-bom:2.15.0-RC"))
+    implementation(platform("net.mamoe:mirai-bom:2.15.0"))
     compileOnly("net.mamoe:mirai-core-utils")
     compileOnly("net.mamoe:mirai-console-compiler-common")
     testImplementation("net.mamoe:mirai-logging-slf4j")
